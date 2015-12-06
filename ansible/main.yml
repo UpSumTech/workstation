@@ -1,0 +1,26 @@
+---
+# This playbook deploys the workstation
+
+- hosts: all
+  sudo: yes
+  remote_user: developer
+  environment:
+    HOME: "/home/developer"
+  roles:
+    - common
+
+- hosts: workstation
+  gather_facts: True
+  sudo: yes
+  remote_user: developer
+  roles:
+    - ssh
+    - git
+    - ag
+    - bash
+    - tmux
+    - vim
+    - ansible
+    - flocker
+    - docker
+    - projects
