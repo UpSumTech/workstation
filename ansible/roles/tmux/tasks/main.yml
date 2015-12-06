@@ -1,0 +1,9 @@
+---
+# These tasks set up tmux for development machine
+
+- name: Get tmux_setup
+  shell: >
+    rm -rf /home/developer/lib/tmux_setup &&
+    git clone git@github.com:sumanmukherjee03/tmux_setup.git /home/developer/lib/tmux_setup &&
+    touch /home/developer/.projects.json
+  sudo: no
