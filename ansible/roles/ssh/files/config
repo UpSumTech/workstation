@@ -1,0 +1,17 @@
+Host *
+  ForwardAgent no
+  ForwardX11 no
+  ForwardX11Trusted no
+  User developer
+  Port 22
+  Protocol 2
+  ServerAliveInterval 60
+  ServerAliveCountMax 30
+
+Host github.com
+  User git
+  IdentityFile ~/.ssh/github/id_rsa
+
+Host *.github.com
+  User git
+  IdentityFile ~/.ssh/github/id_rsa
