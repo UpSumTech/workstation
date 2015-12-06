@@ -1,0 +1,19 @@
+---
+# These tasks set up some common binaries needed to work with
+
+- name: Install apt packages
+  apt: "name='{{ item }}' state=present update_cache=yes install_recommends=no"
+  with_items:
+    - curl
+    - git
+    - htop
+
+- file: state=directory
+        dest=/home/developer/bin
+        owner=developer
+        group=developer
+
+- file: state=directory
+        dest=/home/developer/lib
+        owner=developer
+        group=developer
