@@ -1,0 +1,23 @@
+---
+# These tasks gets all the projects and sets them up for development
+
+- file: state=directory
+        dest=/home/developer/code
+        owner=developer
+        group=developer
+
+- shell: >
+    rm -rf '/home/developer/code/{{ item.dir }}' &&
+    git clone '{{ item.repo }}' '/home/developer/code/{{ item.dir }}'
+  with_items:
+    - repo: 'git@github.com:sumanmukherjee03/setup.git'
+      dir: setup
+    - repo: 'git@github.com:sumanmukherjee03/docker-library.git'
+      dir: docker-library
+    - repo: 'git@github.com:sumanmukherjee03/tmux_setup.git'
+      dir: tmux_setup
+    - repo: 'git@github.com:sumanmukherjee03/vim_setup.git'
+      dir: vim_setup
+    - repo: 'git@github.com:sumanmukherjee03/setup-ui.git'
+      dir: setup-ui
+  sudo: no
