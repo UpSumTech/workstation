@@ -7,3 +7,4 @@
 - file: path=/home/developer/.projects.json
         owner=developer
         group=developer
+        state=touch
