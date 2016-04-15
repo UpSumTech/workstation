@@ -1,8 +1,50 @@
 ---
 # These tasks sets up bash
 
-- copy: src=bashrc
-        dest=/home/developer/.bashrc
-        owner=developer
-        group=developer
-        mode=600
+- file: path=/home/developer/.bash_it state=absent
+
+- name: Clone bashit
+  shell: >
+    git clone --depth=1 https://github.com/Bash-it/bash-it.git /home/developer/.bash_it
+  args:
+    executable: /bin/bash
+  sudo: no
+  register: bashit_cloned
+
+- name: Install bashit
+  shell: >
+    echo y > bash-it-install-option &&
+    /bin/bash /home/developer/.bash_it/install.sh < bash-it-install-option &&
+    rm bash-it-install-option
+  args:
+    executable: /bin/bash
+  sudo: no
+  register: bashit_installed
+  when: bashit_cloned | success
+
+- name: Enable completions for bashit
+  shell: >
+    . /home/developer/.bash_it/bash_it.sh &&
+    bash-it enable completion awscli bundler capistrano defaults dirs django gem git grunt gulp jboss7 maven npm packer pip packer ssh terraform test_kitchen salt tmux vagrant virtualbox rake docker projects
+  args:
+    executable: /bin/bash
+  sudo: no
+  when: bashit_installed | success
+
+- name: Enable plugins for bashit
+  shell: >
+    . /home/developer/.bash_it/bash_it.sh &&
+    bash-it enable plugin aws battery dirs docker docker-machine extract history java javascript jenv nginx node rbenv ruby projects python virtualenv ssh tmux postgres git mankier
+  args:
+    executable: /bin/bash
+  sudo: no
+  when: bashit_installed | success
+
+- name: Enable aliases for bashit
+  shell: >
+    . /home/developer/.bash_it/bash_it.sh &&
+    bash-it enable alias ag ansible bundler docker-compose docker git heroku maven npm rails tmux vagrant vim apt clipboard
+  args:
+    executable: /bin/bash
+  sudo: no
+  when: bashit_installed | success
