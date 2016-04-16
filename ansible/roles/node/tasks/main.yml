@@ -1,0 +1,22 @@
+---
+# These tasks set up nvm and node
+
+- name: Add node PPA
+  shell: curl -sL https://deb.nodesource.com/setup_5.x | sudo -E bash -
+
+- apt: update_cache=yes
+
+- name: Install node
+  apt: name=nodejs
+
+- file: state=directory
+    dest=/home/developer/.tldr
+    owner=developer
+    group=developer
+
+- name: Install tldr and how2
+  shell: sudo npm install -g {{ item }}
+  with_items:
+    - tldr
+    - how2
+  sudo: no

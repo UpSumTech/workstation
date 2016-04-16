@@ -7,13 +7,16 @@
     - curl
     - git
     - htop
+    - libffi-dev
+    - libssl-dev
+    - build-essential
 
 - file: state=directory
-        dest=/home/developer/bin
-        owner=developer
-        group=developer
+    dest=/home/developer/bin
+    owner=developer
+    group=developer
 
 - file: state=directory
-        dest=/home/developer/lib
-        owner=developer
-        group=developer
+    dest=/home/developer/lib
+    owner=developer
+    group=developer

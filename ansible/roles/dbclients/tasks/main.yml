@@ -1,0 +1,37 @@
+---
+# These tasks set up db common clients
+
+- name: Add the gpg key for mycli
+  shell: curl https://packagecloud.io/gpg.key | apt-key add -
+
+- name: Add the source for mycli
+  shell: echo "deb https://packagecloud.io/amjith/mycli/ubuntu/ trusty main" | tee -a /etc/apt/sources.list
+
+- apt: update_cache=yes
+
+- name: Install mycli
+  apt: name=mycli
+
+- name: Install apt packages to install pgcli
+  apt: "name='{{ item }}' state=present update_cache=yes install_recommends=no"
+  with_items:
+    - libpq-dev
+
+- name: Install python packages for ssl
+  pip: name={{ item }}
+  with_items:
+    - pyopenssl
+    - ndg-httpsclient
+    - pyasn1
+    - requests[security]
+  sudo: yes
+
+- name: Install pgcli
+  pip: name=pgcli
+  sudo: yes
+
+- name: Install concurrent multi server mysql client
+  shell: >
+    cd /usr/local/bin &&
+    curl -s -S -L -0 https://github.com/github/ccql/releases/download/v1.1.4/ccql-binary-linux-20160316084430.tar.gz | tar xz
+  sudo: yes

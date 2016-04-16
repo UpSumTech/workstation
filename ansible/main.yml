@@ -24,3 +24,5 @@
     - flocker
     - docker
     - projects
+    - dbclients
+    - node

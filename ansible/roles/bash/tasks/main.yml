@@ -1,5 +1,5 @@
 ---
-# These tasks sets up bash
+# These tasks sets up bash with bash-it
 
 - file: path=/home/developer/.bash_it state=absent
 

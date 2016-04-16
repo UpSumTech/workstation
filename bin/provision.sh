@@ -5,8 +5,6 @@ THIS_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 ANSIBLE_DIR="$THIS_DIR/../ansible"
 
 main() {
-  export ANSIBLE_SCP_IF_SSH=y
-
   if [[ "$1" =~ "-b" ]]; then
     ansible-playbook -c paramiko \
       -i "$ANSIBLE_DIR/hosts" \
@@ -15,7 +13,8 @@ main() {
       --sudo
   fi
 
-  ansible-playbook -i "$ANSIBLE_DIR/hosts" \
+  ansible-playbook -c paramiko \
+    -i "$ANSIBLE_DIR/hosts" \
     "$ANSIBLE_DIR/main.yml"
 }
 
