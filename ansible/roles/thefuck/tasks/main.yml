@@ -1,0 +1,11 @@
+---
+# These tasks set up thefuck
+
+- name: Install thefuck
+  pip: name=thefuck
+
+- copy: src=thefuck.bash
+    dest=/home/developer/.bash_it/custom/thefuck.bash
+    owner=developer
+    group=developer
+    mode=662

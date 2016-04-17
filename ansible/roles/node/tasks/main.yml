@@ -1,5 +1,5 @@
 ---
-# These tasks set up nvm and node
+# These tasks set up node and installs some utilities
 
 - name: Add node PPA
   shell: curl -sL https://deb.nodesource.com/setup_5.x | sudo -E bash -
