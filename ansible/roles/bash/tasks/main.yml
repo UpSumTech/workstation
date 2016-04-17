@@ -55,3 +55,10 @@
     owner=developer
     group=developer
     mode=662
+
+- name: Add utility to your shell
+  copy: src=utils.bash
+    dest=/home/developer/.bash_it/custom/utils.bash
+    owner=developer
+    group=developer
+    mode=662
