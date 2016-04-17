@@ -14,9 +14,27 @@
     owner=developer
     group=developer
 
-- name: Install tldr and how2
+- name: Install utilities
   shell: sudo npm install -g {{ item }}
   with_items:
     - tldr
     - how2
+    - cpy-cli
+    - trash-cli
+    - empty-trash-cli
+    - strip-json-comments-cli
+    - doctoc
+    - git-commander
+    - gistup
+    - pretty-bytes-cli
+    - normalize-newline-cli
+    - speed-test
+    - weather-cli
+    - strip-css-comments-cli
+    - localtunnel
+  sudo: no
+
+- name: Add an alias for rm
+  shell: >
+    echo 'alias rm=trash' >> /home/developer/.bash_it/custom/aliases.bash
   sudo: no

@@ -12,6 +12,8 @@
     - libssl-dev
     - build-essential
 
+- pip: name=maybe
+
 - file: state=directory
     dest=/home/developer/bin
     owner=developer
