@@ -48,3 +48,10 @@
     executable: /bin/bash
   sudo: no
   when: bashit_installed | success
+
+- name: Add placeholder for custom aliases
+  copy: src=aliases.bash
+    dest=/home/developer/.bash_it/custom/aliases.bash
+    owner=developer
+    group=developer
+    mode=662
