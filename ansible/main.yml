@@ -23,7 +23,6 @@
     - ansible
     - flocker
     - docker
-    - projects
     - dbclients
     - node
     - thefuck
