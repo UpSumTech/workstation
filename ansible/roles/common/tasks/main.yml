@@ -11,6 +11,7 @@
     - libffi-dev
     - libssl-dev
     - build-essential
+    - xclip
 
 - pip: name=maybe
 
