@@ -10,7 +10,7 @@ get_os = $(if $(findstring Darwin,$(call uname_s)),MAC,LINUX)
 
 DEBUG := off
 AT_off := @
-AT_off :=
+AT_on :=
 AT = $(AT_$(DEBUG))
 
 TASK_FILES := $(call rfind,ansible/,**/tasks/[^.]*.yml)
