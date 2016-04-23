@@ -1,9 +1,8 @@
 ---
-# This playbook bootstraps a node to become the playbook node server
+# This playbook bootstraps a local machine
 
 - hosts: all
   sudo: yes
-  remote_user: vagrant
 
   tasks:
     - name: Add a developer group
