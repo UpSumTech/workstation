@@ -22,30 +22,11 @@
   register: bashit_installed
   when: bashit_cloned | success
 
-- name: Enable completions for bashit
+- name: Add composure
   shell: >
-    . /home/developer/.bash_it/bash_it.sh &&
-    bash-it enable completion awscli bundler capistrano defaults dirs django gem git grunt gulp jboss7 maven npm packer pip packer ssh terraform test_kitchen salt tmux vagrant virtualbox rake docker projects
-  args:
-    executable: /bin/bash
-  sudo: no
-  when: bashit_installed | success
-
-- name: Enable plugins for bashit
-  shell: >
-    . /home/developer/.bash_it/bash_it.sh &&
-    bash-it enable plugin aws battery dirs docker docker-machine extract history java javascript jenv nginx node rbenv ruby projects python virtualenv ssh tmux postgres git mankier
-  args:
-    executable: /bin/bash
-  sudo: no
-  when: bashit_installed | success
-
-- name: Enable aliases for bashit
-  shell: >
-    . /home/developer/.bash_it/bash_it.sh &&
-    bash-it enable alias ag ansible bundler docker-compose docker git heroku maven npm rails tmux vagrant vim apt clipboard
-  args:
-    executable: /bin/bash
+    cd /home/developer/.bash_it/custom &&
+    curl -L http://git.io/composure > composure.sh &&
+    chmod +x composure.sh
   sudo: no
   when: bashit_installed | success
 
@@ -55,6 +36,7 @@
     owner=developer
     group=developer
     mode=662
+  when: bashit_installed | success
 
 - name: Add utility to your shell
   copy: src=utils.bash
@@ -62,3 +44,34 @@
     owner=developer
     group=developer
     mode=662
+  when: bashit_installed | success
+
+- name: Enable completions for bashit
+  shell: >
+    export BASH_IT=/home/developer/.bash_it &&
+    . /home/developer/.bash_it/bash_it.sh &&
+    bash-it enable completion awscli bundler capistrano defaults dirs django gem git grunt gulp jboss7 maven npm packer pip packer ssh terraform test_kitchen salt tmux vagrant virtualbox rake docker projects
+  args:
+    executable: /bin/bash
+  sudo: no
+  when: bashit_installed | success
+
+- name: Enable plugins for bashit
+  shell: >
+    export BASH_IT=/home/developer/.bash_it &&
+    . /home/developer/.bash_it/bash_it.sh &&
+    bash-it enable plugin aws battery dirs docker docker-machine extract history java javascript jenv nginx node rbenv ruby projects python virtualenv ssh tmux postgres git mankier
+  args:
+    executable: /bin/bash
+  sudo: no
+  when: bashit_installed | success
+
+- name: Enable aliases for bashit
+  shell: >
+    export BASH_IT=/home/developer/.bash_it &&
+    . /home/developer/.bash_it/bash_it.sh &&
+    bash-it enable alias ag ansible bundler docker-compose docker git heroku maven npm rails tmux vagrant vim apt clipboard
+  args:
+    executable: /bin/bash
+  sudo: no
+  when: bashit_installed | success

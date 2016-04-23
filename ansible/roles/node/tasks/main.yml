@@ -17,7 +17,6 @@
 - name: Install utilities
   shell: sudo npm install -g {{ item }}
   with_items:
-    - tldr
     - how2
     - cpy-cli
     - trash-cli

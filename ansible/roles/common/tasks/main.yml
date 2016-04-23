@@ -12,8 +12,7 @@
     - libssl-dev
     - build-essential
     - xclip
-
-- pip: name=maybe
+    - python-pip
 
 - file: state=directory
     dest=/home/developer/bin

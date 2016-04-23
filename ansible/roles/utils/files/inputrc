@@ -1,0 +1,22 @@
+# Copied from several sources. Don't know much about these settings
+# If these dont work properly, simpley delete them.
+
+set page-completions off
+set completion-ignore-case on
+set completion-query-items 200
+set completion-prefix-display-length 10
+set show-all-if-ambiguous on
+set show-all-if-unmodified on
+set visible-stats on
+set mark-symlinked-directories on
+"\e[B": history-search-forward
+"\e[A": history-search-backward
+set match-hidden-files off
+set skip-completed-text on
+set input-meta on
+set output-meta on
+set convert-meta off
+set blink-matching-paren on
+set colored-stats on
+set completion-prefix-display-length 10
+set echo-control-characters off

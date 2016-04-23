@@ -25,4 +25,4 @@
     - docker
     - dbclients
     - node
-    - thefuck
+    - utils
