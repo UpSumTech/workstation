@@ -41,6 +41,7 @@ HOSTS_FILE = $($(MACHINE)_HOSTS_FILE)
 
 deps : $(DEPS_STATEFILE)
 
+# https://help.github.com/articles/generating-a-new-ssh-key-and-adding-it-to-the-ssh-agent/
 build : $(DEPS_STATEFILE) $(TASK_FILES) $(FILES_TO_BE_COPIED) $(BOOTSTRAP_FILE) $(HOSTS_FILE) ansible/main.yml
 ifeq ($(OS),MAC)
 	./bin/provision.sh -b VM

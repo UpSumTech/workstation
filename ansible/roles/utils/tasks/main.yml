@@ -32,3 +32,11 @@
     owner=developer
     group=developer
     mode=662
+
+- apt_repository: repo='ppa:russell-s-stewart/ppa' state=present
+- apt: update_cache=yes
+- name: Install sshrc
+  apt: name=sshrc
+    state=present
+    update_cache=yes
+    install_recommends=no
