@@ -7,7 +7,3 @@
     - openjdk-7-jre
     - openjdk-7-jdk
     - icedtea-plugin
-
-- name: Install wiremock
-  shell: >
-    curl -sSL -0 http://repo1.maven.org/maven2/com/github/tomakehurst/wiremock/1.57/wiremock-1.57-standalone.jar -o ~/lib/wiremock.jar

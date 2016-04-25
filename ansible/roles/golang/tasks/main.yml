@@ -1,0 +1,13 @@
+---
+# These tasks set up various cli tools and utils
+
+- name: Install go
+  shell: >
+    cd /opt &&
+    wget https://storage.googleapis.com/golang/go1.6.2.linux-amd64.tar.gz &&
+    tar -C /usr/local -xzf go1.6.2.linux-amd64.tar.gz &&
+    rm go1.6.2.linux-amd64.tar.gz
+
+- name: Add go bin to PATH
+  shell: echo 'export PATH=$PATH:/usr/local/go/bin' >> /home/developer/.bash_it/custom/utils.sh
+  sudo: no

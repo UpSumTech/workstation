@@ -1,5 +1,5 @@
 ---
-# These tasks set up node and installs some utilities
+# These tasks set up node
 
 - name: Add node PPA
   shell: curl -sL https://deb.nodesource.com/setup_5.x | sudo -E bash -
@@ -8,32 +8,3 @@
 
 - name: Install node
   apt: name=nodejs
-
-- file: state=directory
-    dest=/home/developer/.tldr
-    owner=developer
-    group=developer
-
-- name: Install utilities
-  shell: sudo npm install -g {{ item }}
-  with_items:
-    - how2
-    - cpy-cli
-    - trash-cli
-    - empty-trash-cli
-    - strip-json-comments-cli
-    - doctoc
-    - git-commander
-    - gistup
-    - pretty-bytes-cli
-    - normalize-newline-cli
-    - speed-test
-    - weather-cli
-    - strip-css-comments-cli
-    - localtunnel
-  sudo: no
-
-- name: Add an alias for rm
-  shell: >
-    echo 'alias rm=trash' >> /home/developer/.bash_it/custom/aliases.bash
-  sudo: no

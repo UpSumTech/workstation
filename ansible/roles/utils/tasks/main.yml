@@ -1,7 +1,8 @@
 ---
 # These tasks set up various cli tools and utils
 
-- pip: name=maybe
+- name: Install tools using pip
+  pip: name=maybe
   with_items:
     - maybe
     - doitlive
@@ -12,8 +13,6 @@
   shell: >
     curl -o /home/developer/bin/tldr https://raw.githubusercontent.com/raylee/tldr/master/tldr &&
     chmod +x /home/developer/bin/tldr
-
-- shell: echo 'alias tldr=tldr -p linux' >> /home/developer/.bash_it/custom/aliases.bash
 
 - name: Add inputrc
   copy: src=inputrc
@@ -40,3 +39,60 @@
     state=present
     update_cache=yes
     install_recommends=no
+
+- name: Install tools using gem
+  gem: name={{ item }} state=latest
+  with_items:
+    - bundler
+    - rake
+    - thor
+    - fpm
+    - pleaserun
+
+- name: Add package info to sources for sysdig
+  shell: >
+    curl -s https://s3.amazonaws.com/download.draios.com/DRAIOS-GPG-KEY.public | apt-key add - &&
+    curl -s -o /etc/apt/sources.list.d/draios.list http://download.draios.com/stable/deb/draios.list
+
+- apt: update_cache=yes
+- shell: apt-get install -y linux-headers-$(uname -r)
+- apt: name=sysdig state=present update_cache=yes
+
+- name: Install wiremock
+  shell: >
+    cd /home/developer/lib &&
+    wget http://repo1.maven.org/maven2/com/github/tomakehurst/wiremock/1.57/wiremock-1.57-standalone.jar &&
+    mv wiremock-1.57-standalone.jar wiremock.jar
+
+# - file: state=directory
+    # dest=/home/developer/.tldr
+    # owner=developer
+    # group=developer
+
+- name: Install utilities
+  shell: sudo npm install -g {{ item }}
+  with_items:
+    - how2
+    - cpy-cli
+    - trash-cli
+    - empty-trash-cli
+    - strip-json-comments-cli
+    - doctoc
+    - git-commander
+    - gistup
+    - pretty-bytes-cli
+    - normalize-newline-cli
+    - speed-test
+    - weather-cli
+    - strip-css-comments-cli
+    - localtunnel
+  sudo: no
+
+- name: Add an alias for rm
+  shell: >
+    echo 'alias rm=trash' >> /home/developer/.bash_it/custom/aliases.bash
+  sudo: no
+
+- name: Install ag
+  apt: name=silversearcher-ag state=present update_cache=yes install_recommends=no
+- copy: src=agignore dest=/home/developer/.agignore owner=developer group=developer mode=600
