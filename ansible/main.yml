@@ -16,13 +16,14 @@
   roles:
     - ssh
     - git
-    - ag
     - bash
+    - java
+    - golang
+    - node
     - tmux
     - vim
     - ansible
     - flocker
     - docker
     - dbclients
-    - node
     - utils

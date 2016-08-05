@@ -49,12 +49,20 @@ else
 	./bin/provision.sh -b $(MACHINE)
 endif
 
+update : $(DEPS_STATEFILE) $(TASK_FILES) $(FILES_TO_BE_COPIED) $(HOSTS_FILE) ansible/main.yml
+ifeq ($(OS),MAC)
+	./bin/provision.sh -u VM
+else
+	./bin/provision.sh -u $(MACHINE)
+endif
+
 clean :
 	$(AT)rm -rf .make
 
 help :
 	echo make deps # install dependancies
 	echo make build MACHINE=<VM | LOCAL> # build the workstation on a vm or on local
+	echo make update MACHINE=<VM | LOCAL> # update the workstation on a vm or on local without bootstrapping
 	echo make clean # remove cache and temp dirs
 	echo make help # help menu
 

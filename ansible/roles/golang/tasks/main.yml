@@ -9,5 +9,11 @@
     rm go1.6.2.linux-amd64.tar.gz
 
 - name: Add go bin to PATH
-  shell: echo 'export PATH=$PATH:/usr/local/go/bin' >> /home/developer/.bash_it/custom/utils.sh
+  shell: echo 'export PATH=/usr/local/go/bin:$PATH' >> /home/developer/.bash_it/custom/utils.bash
+  sudo: no
+
+- name: Add go path to bash_profile
+  shell: >
+    echo 'export GOPATH=$HOME/golang' >> /home/developer/.bash_it/custom/utils.bash
+    echo 'export PATH=$GOPATH/bin:$PATH' >> /home/developer/.bash_it/custom/utils.bash
   sudo: no
