@@ -66,10 +66,10 @@
     wget http://repo1.maven.org/maven2/com/github/tomakehurst/wiremock/1.57/wiremock-1.57-standalone.jar &&
     mv wiremock-1.57-standalone.jar wiremock.jar
 
-# - file: state=directory
-    # dest=/home/developer/.tldr
-    # owner=developer
-    # group=developer
+- file: state=directory
+    dest=/home/developer/.tldr
+    owner=developer
+    group=developer
 
 - name: Install utilities
   shell: sudo npm install -g {{ item }}
