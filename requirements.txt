@@ -1,0 +1,9 @@
+Fabric==1.12.0
+PyYAML==3.11
+colorama==0.2.5
+docopts==0.6.1
+ipython==2.2.0
+paramiko==1.14.0
+python-dateutil==2.2
+requests==2.4.1
+schema==0.3.1
