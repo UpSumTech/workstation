@@ -8,19 +8,8 @@ import pprint
 import json
 import re
 from datetime import datetime
-import uuid
-import time
 import urllib2
 import collections
-import traceback
-import logging
-import base64
-from distutils.version import StrictVersion
-import dateutil.parser
-import yaml
-import schema
-from random import randint
-import csv
 
 __doc__="""Get OS Info
 Usage:
@@ -61,10 +50,8 @@ def main(args=None):
     timestamp=get_timestamp()
     ret_val = dict(os_type=os_type,
         timestamp=timestamp)
-
     if args['network']:
         fetch_network_details()
-
     print(ret_val)
 
 if __name__ == '__main__':
