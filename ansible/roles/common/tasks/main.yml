@@ -13,6 +13,8 @@
     - build-essential
     - xclip
     - python-pip
+  become: true
+  become_user: root
 
 - file: state=directory
     dest=/home/developer/bin

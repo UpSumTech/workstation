@@ -10,10 +10,14 @@
     - vim-tiny
     - vim-common
     - vim-gui-common
+  become: true
+  become_user: root
   register: is_existing_vim_removed
 
 - name: Get vim build dependency
   apt: "name=vim-gnome state=build-dep"
+  become: true
+  become_user: root
   when: is_existing_vim_removed|success
   register: is_vim_build_dep_installed
 
@@ -36,6 +40,8 @@
     - libx11-dev
     - libxpm-dev
     - libxt-dev
+  become: true
+  become_user: root
   when: is_vim_build_dep_installed|success
   register: is_vim_dependencies_installed
 
@@ -43,6 +49,8 @@
   shell: >
     mkdir -p /usr/include/lua5.1/include &&
     mv /usr/include/lua5.1/*.h /usr/include/lua5.1/include >/dev/null 2>&1
+  become: true
+  become_user: root
   ignore_errors: yes
   when: is_vim_dependencies_installed|success
 
@@ -78,12 +86,15 @@
     make
   args:
     executable: /bin/bash
-  sudo: no
+  become: true
+  become_user: root
   when: is_vim_dependencies_installed|success and has_latest_vim|success
   register: is_vim_configured
 
 - name: Install vim
   shell: cd /home/developer/lib/vim && make install
+  become: true
+  become_user: root
   when: is_vim_configured|success
   register: is_vim_installed
 

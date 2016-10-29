@@ -10,6 +10,8 @@
     - supervisor
     - csvkit
     - shyaml
+  become: true
+  become_user: root
 
 - name: Setup tldr for bash
   shell: >
@@ -25,6 +27,8 @@
 
 - name: Install thefuck
   pip: name=thefuck
+  become: true
+  become_user: root
 
 # Don't change this to echo a line to an existing file
 # Let this be a file in itself
@@ -35,12 +39,20 @@
     mode=662
 
 - apt_repository: repo='ppa:russell-s-stewart/ppa' state=present
+  become: true
+  become_user: root
+
 - apt: update_cache=yes
+  become: true
+  become_user: root
+
 - name: Install sshrc
   apt: name=sshrc
     state=present
     update_cache=yes
     install_recommends=no
+  become: true
+  become_user: root
 
 - name: Install tools using gem
   gem: name={{ item }} state=latest
@@ -50,15 +62,27 @@
     - thor
     - fpm
     - pleaserun
+  become: true
+  become_user: root
 
 - name: Add package info to sources for sysdig
   shell: >
     curl -s https://s3.amazonaws.com/download.draios.com/DRAIOS-GPG-KEY.public | apt-key add - &&
     curl -s -o /etc/apt/sources.list.d/draios.list http://download.draios.com/stable/deb/draios.list
+  become: true
+  become_user: root
 
 - apt: update_cache=yes
+  become: true
+  become_user: root
+
 - shell: apt-get install -y linux-headers-$(uname -r)
+  become: true
+  become_user: root
+
 - apt: name=sysdig state=present update_cache=yes
+  become: true
+  become_user: root
 
 - name: Install wiremock
   shell: >
@@ -72,7 +96,7 @@
     group=developer
 
 - name: Install utilities
-  shell: sudo npm install -g {{ item }}
+  npm: name={{ item }} global=yes state=latest
   with_items:
     - how2
     - cpy-cli
@@ -90,7 +114,8 @@
     - localtunnel
     - json2csv
     - xml2json-command
-  sudo: no
+  become: true
+  become_user: root
 
 - name: Add an alias for rm
   shell: >
@@ -99,18 +124,22 @@
 
 - name: Install ag
   apt: name=silversearcher-ag state=present update_cache=yes install_recommends=no
+  become: true
+  become_user: root
+
 - copy: src=agignore dest=/home/developer/.agignore owner=developer group=developer mode=600
 
 - name: Install go utilities
-  shell: go get -u {{ item }}
-  args:
-    executable: /bin/bash
-  sudo: no
+  shell: >
+    export GOPATH=$HOME/golang && /usr/local/go/bin/go get -u "{{ item }}"
   with_items:
     - github.com/rakyll/boom
     - github.com/tsenart/vegeta
     - github.com/msoap/shell2http
     - github.com/cortesi/modd/cmd/modd
-    - github.com/quii/mockingjay-server
+    - github.com/jteeuwen/go-bindata/...
+    # - github.com/quii/mockingjay-server
     - github.com/tylertreat/comcast
     # - github.com/buger/gor
+  args:
+    executable: /bin/bash

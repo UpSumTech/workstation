@@ -2,6 +2,9 @@
 # These tasks sets up git
 
 - apt: name=git state=present update_cache=yes install_recommends=no
+  become: true
+  become_user: root
 
-- shell: curl -s -S -L https://raw.githubusercontent.com/sumanmukherjee03/git-setup/master/bootstrap.sh | bash
+- name: Initialize the git setup of the new user
+  shell: curl -s -S -L https://raw.githubusercontent.com/sumanmukherjee03/git-setup/master/bootstrap.sh | bash
   sudo: no

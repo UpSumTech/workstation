@@ -7,3 +7,5 @@
     - openjdk-7-jre
     - openjdk-7-jdk
     - icedtea-plugin
+  become: true
+  become_user: root
