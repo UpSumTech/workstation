@@ -12,6 +12,12 @@ from ansible.vars import VariableManager
 from ansible.inventory import Inventory
 from ansible.executor import playbook_executor
 
+######### Utility functions ##################
+
+def die(msg):
+    sys.stderr.write("Error : %s\n" % msg)
+    sys.exit(1)
+
 ######### Error classes ######################
 
 class BadArgument(Exception):
@@ -126,7 +132,7 @@ Options:
     --ignore-dry-run                                 This option will ignore the dry run and execute the playbooks
 """
 
-######### Entrypoint ###########
+######### Public API ###########
 
 def main(args=None):
     """Entrypoint
@@ -140,6 +146,7 @@ def main(args=None):
         ansible_python_interpreter="/usr/bin/env python")
 
     if args['--host']:
+        extra_vars['homebrew_github_api_token'] = os.environ.get('HOMEBREW_GITHUB_API_TOKEN')
         _run_playbook(
                 args['--host'],
                 extra_vars=extra_vars,
@@ -148,6 +155,16 @@ def main(args=None):
     else:
         raise BadArgument('You need to provide a host ip for setup.')
 
+######### Entrypoint ###########
+
+## sanity check for correct virtualenv
+if not 'workstation' in os.environ.get('VIRTUAL_ENV',''):
+    die("Load the virtualenv by cd ing out and back into the root of the workstation")
+
+if not os.environ.get('HOMEBREW_GITHUB_API_TOKEN'):
+    die("You need to set a github token for homebrew to use")
+
+## call main
 if __name__ == '__main__':
     args = docopt(__doc__, argv=sys.argv[1:])
     main(args)
