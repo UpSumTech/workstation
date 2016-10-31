@@ -2,4 +2,6 @@
 #
 # This file contains custom utilities
 
-export PATH="$HOME/bin:$PATH"
+if [ -f "$HOME/.env_vars" ]; then
+  . "$HOME/.env_vars"
+fi

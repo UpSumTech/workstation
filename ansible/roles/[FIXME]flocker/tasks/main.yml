@@ -1,5 +1,6 @@
 ---
 # These tasks setup flocker
+# This role is not getting used currently and is probably out of date
 
 - name: Install apt packages
   apt: "name='{{ item }}' state=present update_cache=yes install_recommends=no"

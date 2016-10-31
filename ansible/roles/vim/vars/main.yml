@@ -1,0 +1,23 @@
+---
+
+# vim config options
+vim:
+  config_options:
+    - "--with-features=huge"
+    - "--enable-multibyte"
+    - "--enable-rubyinterp"
+    - "--enable-largefile"
+    - "--disable-netbeans"
+    - "--with-python"
+    - "--enable-pythoninterp"
+    - "--with-python-config-dir=$(brew --prefix)/lib/python2.7/config"
+    - "--enable-perlinterp"
+    - "--with-lua"
+    - "--with-luajit"
+    - "--enable-luainterp"
+    - "--with-lua-prefix=$(brew --prefix)/include/lua5.2"
+    - "--with-tcl"
+    - "--enable-gui=auto"
+    - "--enable-fail-if-missing"
+    - "--enable-clipboard"
+    - "--enable-cscope"

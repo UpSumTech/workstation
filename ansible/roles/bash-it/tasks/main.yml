@@ -1,0 +1,44 @@
+---
+# These tasks sets up bash with bash-it
+
+- file: path=/home/developer/.bash_it state=absent
+
+- name: Clone bashit
+  shell: >
+    git clone --depth=1 https://github.com/Bash-it/bash-it.git /home/developer/.bash_it
+  args:
+    executable: /bin/bash
+  register: bashit_cloned
+
+- name: Install bashit
+  shell: >
+    echo y > bash-it-install-option &&
+    /bin/bash /home/developer/.bash_it/install.sh < bash-it-install-option &&
+    rm bash-it-install-option
+  args:
+    executable: /bin/bash
+  register: bashit_installed
+  when: bashit_cloned | success
+
+- name: Add composure
+  shell: >
+    cd /home/developer/.bash_it/custom &&
+    curl -L http://git.io/composure > composure.sh &&
+    chmod +x composure.sh
+  when: bashit_installed | success
+
+- name: Add placeholder for custom aliases
+  copy: src=aliases.bash
+    dest=/home/developer/.bash_it/custom/aliases.bash
+    owner=developer
+    group=developer
+    mode=662
+  when: bashit_installed | success
+
+- name: Add utility to your shell
+  copy: src=utils.bash
+    dest=/home/developer/.bash_it/custom/utils.bash
+    owner=developer
+    group=developer
+    mode=662
+  when: bashit_installed | success

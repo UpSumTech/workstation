@@ -1,0 +1,103 @@
+---
+
+apt:
+  utils:
+    - sysdig
+    - traceroute
+
+# utils to install through homebrew
+homebrew:
+  utils:
+    - colordiff # diffing tool
+    - tree # display folder structure
+    - pstree # process info
+    - mtr # combines ping and traceroute
+    - htop # better top
+    - ag # grepping tool
+    - jq # json parser
+    - tig # git client
+    - wireshark # network analyzing and troubleshooting tool
+    - mycli # better mysql client
+    - pgcli # better postgres client
+    - homebrew/dupes/krb5 # prerequisite for ansible
+    - ansible # you are using this
+    - awscli # aws cli
+    - pcre # perl regex matching
+    - jpeg # image manipulation lib
+    - libpng # image manipulation lib for PNG files
+    - libtiff # TIFF library and utilities
+    - freetype # font rendering lib
+    - imagemagick # image manipulation library in multiple formats
+
+# bash_it completions plugins and aliases
+bash_it:
+  completions:
+    - completion
+    - awscli
+    - bundler
+    - capistrano
+    - defaults
+    - dirs
+    - django
+    - gem
+    - git
+    - grunt
+    - gulp
+    - jboss7
+    - maven
+    - npm
+    - packer
+    - pip
+    - packer
+    - ssh
+    - terraform
+    - test_kitchen
+    - salt
+    - tmux
+    - vagrant
+    - virtualbox
+    - rake
+    - docker
+    - projects
+
+  plugins:
+    - aws
+    - battery
+    - dirs
+    - docker
+    - docker-machine
+    - extract
+    - history
+    - java
+    - jenv
+    - javascript
+    - nginx
+    - node
+    - rbenv
+    - ruby
+    - projects
+    - python
+    - virtualenv
+    - pyenv
+    - ssh
+    - tmux
+    - postgres
+    - git
+    - mankier
+
+  aliases:
+    - ag
+    - ansible
+    - bundler
+    - docker-compose
+    - docker
+    - git
+    - heroku
+    - maven
+    - npm
+    - rails
+    - tmux
+    - vagrant
+    - vim
+    - apt
+    - clipboard

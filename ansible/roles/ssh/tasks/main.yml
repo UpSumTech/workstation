@@ -15,7 +15,6 @@
 - name: Add github as a known host to the ssh config of developer user
   shell: >
     ssh-keyscan -H github.com >> /home/developer/.ssh/known_hosts && chmod 600 /home/developer/.ssh/known_hosts
-  sudo: no
 
 - copy: src=config
         dest=/home/developer/.ssh/config

@@ -1,8 +1,11 @@
 ---
 # These tasks set up various cli tools and utils
 
+- name: Install Linuxbrew util packages
+  shell: /bin/bash -ic "brew install {{ ' '.join(homebrew.utils) }}"
+
 - name: Install tools using pip
-  pip: name=maybe
+  shell: /bin/bash -ic "pip install {{ item }}"
   with_items:
     - maybe
     - doitlive
@@ -10,8 +13,6 @@
     - supervisor
     - csvkit
     - shyaml
-  become: true
-  become_user: root
 
 - name: Setup tldr for bash
   shell: >
@@ -21,19 +22,6 @@
 - name: Add inputrc
   copy: src=inputrc
     dest=/home/developer/.inputrc
-    owner=developer
-    group=developer
-    mode=662
-
-- name: Install thefuck
-  pip: name=thefuck
-  become: true
-  become_user: root
-
-# Don't change this to echo a line to an existing file
-# Let this be a file in itself
-- copy: src=thefuck.bash
-    dest=/home/developer/.bash_it/custom/thefuck.bash
     owner=developer
     group=developer
     mode=662
@@ -55,32 +43,15 @@
   become_user: root
 
 - name: Install tools using gem
-  gem: name={{ item }} state=latest
+  shell: /bin/bash -ic "gem install {{ item }}"
   with_items:
     - bundler
     - rake
     - thor
     - fpm
     - pleaserun
-  become: true
-  become_user: root
-
-- name: Add package info to sources for sysdig
-  shell: >
-    curl -s https://s3.amazonaws.com/download.draios.com/DRAIOS-GPG-KEY.public | apt-key add - &&
-    curl -s -o /etc/apt/sources.list.d/draios.list http://download.draios.com/stable/deb/draios.list
-  become: true
-  become_user: root
-
-- apt: update_cache=yes
-  become: true
-  become_user: root
 
 - shell: apt-get install -y linux-headers-$(uname -r)
-  become: true
-  become_user: root
-
-- apt: name=sysdig state=present update_cache=yes
   become: true
   become_user: root
 
@@ -95,8 +66,8 @@
     owner=developer
     group=developer
 
-- name: Install utilities
-  npm: name={{ item }} global=yes state=latest
+- name: Install npm utilities
+  shell: /bin/bash -ic "npm install -g {{ item }}"
   with_items:
     - how2
     - cpy-cli
@@ -114,24 +85,32 @@
     - localtunnel
     - json2csv
     - xml2json-command
-  become: true
-  become_user: root
 
 - name: Add an alias for rm
   shell: >
     echo 'alias rm=trash' >> /home/developer/.bash_it/custom/aliases.bash
   sudo: no
 
-- name: Install ag
-  apt: name=silversearcher-ag state=present update_cache=yes install_recommends=no
+- copy: src=agignore dest=/home/developer/.agignore owner=developer group=developer mode=600
+
+- name: Add package info to sources for sysdig
+  shell: >
+    curl -s https://s3.amazonaws.com/download.draios.com/DRAIOS-GPG-KEY.public | apt-key add - &&
+    curl -s -o /etc/apt/sources.list.d/draios.list http://download.draios.com/stable/deb/draios.list
   become: true
   become_user: root
 
-- copy: src=agignore dest=/home/developer/.agignore owner=developer group=developer mode=600
+- apt: update_cache=yes
+  become: true
+  become_user: root
+
+- apt: name={{ item }} state=present
+  with_items: "{{ apt.utils }}"
+  become: true
+  become_user: root
 
 - name: Install go utilities
-  shell: >
-    export GOPATH=$HOME/golang && /usr/local/go/bin/go get -u "{{ item }}"
+  shell: /bin/bash -ic "go get -u '{{ item }}'"
   with_items:
     - github.com/rakyll/boom
     - github.com/tsenart/vegeta
@@ -141,5 +120,15 @@
     # - github.com/quii/mockingjay-server
     - github.com/tylertreat/comcast
     # - github.com/buger/gor
-  args:
-    executable: /bin/bash
+
+- name: Install concurrent multi server mysql client
+  shell: /bin/bash -ic "cd $HOME/bin && curl -s -S -L -0 https://github.com/github/ccql/releases/download/v1.1.4/ccql-binary-linux-20160316084430.tar.gz | tar xz"
+
+- name: Enable completions for bashit
+  shell: /bin/bash -ic "bash-it enable {{ ' '.join(bash_it.completions) }}"
+
+- name: Enable plugins for bashit
+  shell: /bin/bash -ic "bash-it enable plugin {{ ' '.join(bash_it.plugins) }}"
+
+- name: Enable aliases for bashit
+  shell: /bin/bash -ic "bash-it enable alias {{ ' '.join(bash_it.aliases) }}"

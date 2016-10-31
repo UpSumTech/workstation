@@ -1,10 +1,9 @@
 ---
-# These tasks sets up git
 
+# These tasks sets up git. We need a system version of git for homebrew to be installed
 - apt: name=git state=present update_cache=yes install_recommends=no
   become: true
   become_user: root
 
 - name: Initialize the git setup of the new user
-  shell: curl -s -S -L https://raw.githubusercontent.com/sumanmukherjee03/git-setup/master/bootstrap.sh | bash
-  sudo: no
+  shell: curl -s -S -L https://raw.githubusercontent.com/sumanmukherjee03/git-setup/master/bootstrap.sh | bash -i

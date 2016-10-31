@@ -1,0 +1,15 @@
+---
+
+# This task installs linuxbrew, a package management fork of homebrew for linux
+# Do not trust this to install everything properly yet, but mostly it should work
+- name: Install linux brew
+  shell: ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install)"
+
+- name: Add github token to access homebrew to bashrc
+  shell: echo "export HOMEBREW_GITHUB_API_TOKEN={{ homebrew_github_api_token }}" >> $HOME/.env_vars
+
+- name: Install Linuxbrew essential packages
+  shell: /bin/bash -ic "brew install {{ ' '.join(homebrew_packages.essentials) }}"
+
+- name: Install Linuxbrew language packages
+  shell: /bin/bash -ic "brew install {{ ' '.join(homebrew_packages.langs) }}"

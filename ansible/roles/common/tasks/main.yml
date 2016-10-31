@@ -6,12 +6,22 @@
   with_items:
     - curl
     - git
-    - htop
-    - jq
     - libffi-dev
     - libssl-dev
+    - libbz2-dev
+    - libcurl4-openssl-dev
+    - libexpat-dev
+    - libncurses-dev
     - build-essential
     - xclip
+    - cmake
+    - scons
+    - autoconf
+    - automake
+    - autoconf-archive
+    - libtool
+    - flex
+    - bison
     - python-pip
   become: true
   become_user: root
@@ -25,3 +35,18 @@
     dest=/home/developer/lib
     owner=developer
     group=developer
+
+- file: state=directory
+    dest=/home/developer/golang
+    owner=developer
+    group=developer
+
+- name: Add extra line to profile file
+  shell: echo ". $HOME/.env_vars" >> $HOME/.profile
+
+- name: Add env_vars file to your home dir
+  copy: src=env_vars
+    dest=/home/developer/.env_vars
+    owner=developer
+    group=developer
+    mode=644

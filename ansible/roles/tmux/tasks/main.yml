@@ -2,7 +2,6 @@
 # These tasks set up tmux for development machine
 
 - shell: curl -s -S -L https://raw.githubusercontent.com/sumanmukherjee03/tmux_setup/master/bootstrap.sh | bash
-  sudo: no
 
 - file: path=/home/developer/.projects.json
         owner=developer

@@ -7,6 +7,10 @@
     - curl
     - git
     - python-pip
+    - apt-transport-https
+    - ca-certificates
+  become: true
+  become_user: root
 
 - name: Install docker on host
   shell: >
@@ -14,6 +18,8 @@
     curl -sSL https://get.docker.com/gpg | sudo apt-key add - &&
     curl -sSL https://get.docker.com/ | sh
   register: install_docker
+  become: true
+  become_user: root
 
 - name: Install docker-py
   pip: name=docker-py version=1.5.0

@@ -1,0 +1,30 @@
+---
+
+## Homebrew packages to install
+homebrew_packages:
+  essentials:
+    - git
+    - curl
+    - wget
+    - readline
+    - libtool
+    - tmux
+
+  langs:
+    - bash
+    - python
+    - ruby
+    - node
+    - golang
+    - jdk7
+    - lua
+    - luajit
+    - perl
+
+  version_management_packages:
+    - autoenv
+    - pyenv
+    - pyenv-virtualenv
+    - rbenv
+    - nvm
+    - jenv
