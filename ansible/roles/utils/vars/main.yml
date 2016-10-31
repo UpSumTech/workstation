@@ -2,8 +2,10 @@
 
 apt:
   utils:
-    - sysdig
-    - traceroute
+    - sysdig # tool to inspect system calls
+    - traceroute # tool to diagnose network connectivity
+    - tcptrace # tool to analyze tcpdump output
+    - ngrep # grep for the network layer
 
 # utils to install through homebrew
 homebrew:
@@ -28,6 +30,7 @@ homebrew:
     - libtiff # TIFF library and utilities
     - freetype # font rendering lib
     - imagemagick # image manipulation library in multiple formats
+    - fio # T/O stress test/benchmarking tool
 
 # bash_it completions plugins and aliases
 bash_it:
