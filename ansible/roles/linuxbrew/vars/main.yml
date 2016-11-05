@@ -11,15 +11,26 @@ homebrew_packages:
     - tmux
 
   langs:
-    - bash
-    - python
-    - ruby
-    - node
-    - golang
-    - jdk7
-    - lua
-    - luajit
-    - perl
+    stage_1:
+      - bash
+      - python
+      - perl
+
+    stage_2:
+      - ruby
+
+    stage_3:
+      - node
+
+    stage_4:
+      - golang
+
+    stage_5:
+      - jdk7
+
+    stage_6:
+      - lua
+      - luajit
 
   version_management_packages:
     - autoenv

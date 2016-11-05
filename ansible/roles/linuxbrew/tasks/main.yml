@@ -12,4 +12,19 @@
   shell: /bin/bash -ic "brew install {{ ' '.join(homebrew_packages.essentials) }}"
 
 - name: Install Linuxbrew language packages
-  shell: /bin/bash -ic "brew install {{ ' '.join(homebrew_packages.langs) }}"
+  shell: /bin/bash -ic "brew install {{ ' '.join(homebrew_packages.langs.stage_1) }}"
+
+- name: Install Linuxbrew language packages
+  shell: /bin/bash -ic "brew install {{ ' '.join(homebrew_packages.langs.stage_2) }}"
+
+- name: Install Linuxbrew language packages
+  shell: /bin/bash -ic "brew install {{ ' '.join(homebrew_packages.langs.stage_3) }}"
+
+- name: Install Linuxbrew language packages
+  shell: /bin/bash -ic "brew install {{ ' '.join(homebrew_packages.langs.stage_4) }}"
+
+- name: Install Linuxbrew language packages
+  shell: /bin/bash -ic "brew install {{ ' '.join(homebrew_packages.langs.stage_5) }}"
+
+- name: Install Linuxbrew language packages
+  shell: /bin/bash -ic "brew install {{ ' '.join(homebrew_packages.langs.stage_6) }}"
