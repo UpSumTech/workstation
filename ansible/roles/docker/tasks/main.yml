@@ -1,0 +1,64 @@
+---
+# These tasks install docker and its dependencies
+
+- name: install-apt-packages-for-docker
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+    install_recommends: no
+  with_items:
+    - apt-transport-https
+    - ca-certificates
+  become: true
+  become_user: root
+
+- shell: apt-get install -yq "linux-headers-$(uname -r)" linux-image-extra-virtual
+  become: true
+  become_user: root
+
+- name: add-gpg-key-for-docker
+  apt_key:
+    keyserver: "hkp://p80.pool.sks-keyservers.net:80"
+    id: 58118E89F3A912897C070ADBF76221572C52609D
+    state: present
+  become: true
+  become_user: root
+
+- name: add-source-to-apt
+  apt_repository:
+    repo: "deb https://apt.dockerproject.org/repo ubuntu-trusty main"
+    state: present
+    filename: "docker.list"
+    update_cache: yes
+  become: true
+  become_user: root
+
+- name: install-docker-on-host
+  apt:
+    name: docker-engine
+    state: present
+    install_recommends: yes
+    update_cache: yes
+  become: true
+  become_user: root
+  register: is_docker_installed
+
+- name: add-docker-group
+  group:
+    name: docker
+    state: present
+  become: true
+  become_user: root
+
+- name: add-developer-to-docker-group
+  user:
+    name: developer
+    append: yes
+    groups: docker
+  become: true
+  become_user: root
+
+- name: Install docker-py python client for docker
+  shell: /bin/bash -ic "pip install docker-py"
+  when: is_docker_installed|success

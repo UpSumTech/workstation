@@ -26,7 +26,9 @@
     group=developer
     mode=662
 
-- apt_repository: repo='ppa:russell-s-stewart/ppa' state=present
+- apt_repository:
+    repo: 'ppa:russell-s-stewart/ppa'
+    state: present
   become: true
   become_user: root
 
@@ -35,10 +37,11 @@
   become_user: root
 
 - name: Install sshrc
-  apt: name=sshrc
-    state=present
-    update_cache=yes
-    install_recommends=no
+  apt:
+    name: sshrc
+    state: present
+    update_cache: yes
+    install_recommends: no
   become: true
   become_user: root
 
@@ -50,10 +53,6 @@
     - thor
     - fpm
     - pleaserun
-
-- shell: apt-get install -y linux-headers-$(uname -r)
-  become: true
-  become_user: root
 
 - name: Install wiremock
   shell: >
@@ -100,11 +99,14 @@
   become: true
   become_user: root
 
-- apt: update_cache=yes
+- apt:
+    update_cache: yes
   become: true
   become_user: root
 
-- apt: name={{ item }} state=present
+- apt:
+    name: "{{ item }}"
+    state: present
   with_items: "{{ apt.utils }}"
   become: true
   become_user: root
