@@ -29,7 +29,7 @@ homebrew_packages:
       - jdk7
 
     stage_6:
-      - lua
+      - lua51
       - luajit
 
   version_management_packages:
