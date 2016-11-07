@@ -31,6 +31,10 @@ homebrew:
     - freetype # font rendering lib
     - imagemagick # image manipulation library in multiple formats
     - fio # T/O stress test/benchmarking tool
+    - pyenv # manage python versions
+    - rbenv # manage ruby versions
+    - nvm # manage node versions
+    - jenv # manage java versions
 
 # bash_it completions plugins and aliases
 bash_it:
@@ -84,7 +88,6 @@ bash_it:
     - pyenv
     - ssh
     - tmux
-    - postgres
     - git
     - mankier
 
