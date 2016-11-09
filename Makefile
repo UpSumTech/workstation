@@ -1,7 +1,7 @@
 ##########################################################################################
 ## Functions
 
-find = $(shell find '$(1)' -path '$(2)')
+rfind = $(shell find '$(1)' -path '$(2)')
 uname_s = $(shell uname -s)
 get_os = $(if $(findstring Darwin,$(call uname_s)),MAC,LINUX)
 
