@@ -1,5 +1,8 @@
 #! /usr/bin/env bash
 
-sudo apt-get install -y virtualbox vagrant virtualbox-dkms python-pip
-sudo pip install paramiko
-sudo pip install ansible==1.9.1
+curl -L https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer | bash
+echo 'export PATH="/home/ubuntu/.pyenv/bin:$PATH"' >> ~/.bashrc
+echo 'eval "$(pyenv init -)"' >> ~/.bashrc
+echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.bashrc
+source ~/.bashrc
+pip install -r requirements.txt

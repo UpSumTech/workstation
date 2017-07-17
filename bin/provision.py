@@ -81,7 +81,7 @@ class Options(object):
 
 ######### Internal function ###########
 
-def _run_playbook(host, extra_vars={}, dry_run=True):
+def _run_playbook(provision_type, host, extra_vars={}, dry_run=True):
     """Runs the ansible playbook
     Instead of running ansible as a executable, run ansible through it's API
     """
@@ -91,14 +91,24 @@ def _run_playbook(host, extra_vars={}, dry_run=True):
     variable_manager.extra_vars = extra_vars
     loader = DataLoader()
     options = Options()
-    playbook = os.path.join(os.getcwd(), 'ansible/main.yml')
+
+    if provision_type == 'bootstrap':
+        if host == 'localhost'
+            playbook = os.path.join(os.getcwd(), 'ansible/bootstrap-local.yml')
+        else:
+            playbook = os.path.join(os.getcwd(), 'ansible/bootstrap-vm.yml')
+    elif provision_type == 'developer':
+        playbook = os.path.join(os.getcwd(), 'ansible/main.yml')
+        options.become_user = 'developer'
+    else:
+        raise BadArgument('The playbook type provided is not valid')
+
     passwords = {'become_pass': None}
 
     options.check=dry_run
     options.connection = 'ssh'
     options.become = True
     options.become_method = 'sudo'
-    options.become_user = 'developer'
 
     hosts = NamedTemporaryFile(delete=False)
     hosts.write("""[workstation]
@@ -123,8 +133,9 @@ def _run_playbook(host, extra_vars={}, dry_run=True):
 
 __doc__="""Configures a workstation on a virtual machine or localhost
 Usage:
-    create.py --host=<host> [--ignore-dry-run]
-    create.py (-h | --help)
+    provision.py bootstrap --host=<host> [--ignore-dry-run]
+    provision.py developer --host=<host> [--ignore-dry-run]
+    provision.py (-h | --help)
 
 Options:
     -h --help                                        You are looking at this option right now.
@@ -145,15 +156,14 @@ def main(args=None):
     extra_vars = dict(
         ansible_python_interpreter="/usr/bin/env python")
 
-    if args['--host']:
+    if args['bootstrap']:
         extra_vars['homebrew_github_api_token'] = os.environ.get('HOMEBREW_GITHUB_API_TOKEN')
-        _run_playbook(
-                args['--host'],
-                extra_vars=extra_vars,
-                dry_run=dry_run)
-
+        _run_playbook('boottrap', args['--host'], extra_vars=extra_vars, dry_run=dry_run)
+    if args['developer']:
+        extra_vars['homebrew_github_api_token'] = os.environ.get('HOMEBREW_GITHUB_API_TOKEN')
+        _run_playbook('developer', args['--host'], extra_vars=extra_vars, dry_run=dry_run)
     else:
-        raise BadArgument('You need to provide a host ip for setup.')
+        raise BadArgument('You need to provide a valid provision type. Can be one of bootstrap|developer.')
 
 ######### Entrypoint ###########
 

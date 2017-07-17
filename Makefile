@@ -62,11 +62,11 @@ deps : $(DEPS_STATEFILE)
 bootstrap : $(BOOTSTRAP_STATEFILE)
 
 $(BOOTSTRAP_STATEFILE) : $(DEPS_STATEFILE) $(BOOTSTRAP_FILE) $(HOSTS_FILE)
-	$(AT)ansible-playbook -c $(CONN_TYPE) -i "$(HOSTS_FILE)" "$(BOOTSTRAP_FILE)" --ask-pass --sudo
+	$(AT)./bin/provision.py bootstrap --host=$(HOST_IP) $(IGNORE_DRY_RUN)
 	$(AT)touch $(BOOTSTRAP_STATEFILE)
 
 build : bootstrap $(TASK_FILES) $(ROLES_FILES) ansible/main.yml
-	$(AT)./bin/provision.py --host=$(HOST_IP) $(IGNORE_DRY_RUN)
+	$(AT)./bin/provision.py developer --host=$(HOST_IP) $(IGNORE_DRY_RUN)
 
 clean :
 	$(AT)[ -f "$(BOOTSTRAP_STATEFILE)" ] && rm $(BOOTSTRAP_STATEFILE); echo "Nothing to clean"
