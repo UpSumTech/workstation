@@ -13,6 +13,7 @@
     - supervisor
     - csvkit
     - shyaml
+    - credstash
 
 - name: Setup tldr for bash
   shell: >
