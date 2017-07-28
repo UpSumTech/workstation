@@ -1,2 +1,3 @@
 docker/.docker_login_mapping
 .vagrant
+**/*.retry

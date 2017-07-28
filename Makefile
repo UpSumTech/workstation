@@ -75,12 +75,12 @@ fullclean :
 	$(AT)rm -rf .make
 
 help :
-	echo make deps # install dependancies
-	echo make bootstrap MACHINE=<VM | LOCAL> # bootstrap the workstation on a vm or on local
-	echo make build HOST_IP=<172.20.20.10> # This is a dry run to build the workstation on a host ip or on localhost
-	echo make build HOST_IP=<172.20.20.10> DRY_RUN=off # This target builds the workstation on a host ip or on localhost
-	echo make clean # remove cache and temp dirs
-	echo make help # help menu
+	@echo make deps # install dependancies
+	@echo make bootstrap MACHINE=VM # bootstrap the workstation on a vm or on local
+	@echo make build HOST_IP=172.20.20.10 # This is a dry run to build the workstation on a host ip or on localhost
+	@echo make build HOST_IP=172.20.20.10 DRY_RUN=off # This target builds the workstation on a host ip or on localhost
+	@echo make clean # remove cache and temp dirs
+	@echo make help # help menu
 
 ##########################################################################################
 ## Plumbing

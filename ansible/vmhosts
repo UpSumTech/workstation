@@ -1,2 +1,2 @@
 [workstation]
-workstation.dev ansible_ssh_host=172.20.20.10
+workstation.dev ansible_ssh_host=172.20.20.10 ansible_ssh_user=vagrant ansible_password=vagrant
