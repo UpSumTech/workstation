@@ -4,6 +4,7 @@
 rfind = $(shell find '$(1)' -path '$(2)')
 uname_s = $(shell uname -s)
 get_os = $(if $(findstring Darwin,$(call uname_s)),MAC,LINUX)
+get_ip_type = $(if $(shell echo $(1) | grep -E '^(192\.168|10\.|172\.1[6789]\.|172\.2[0-9]\.|172\.3[01]\.)'),'private','public')
 
 ##########################################################################################
 ## Variables
@@ -35,16 +36,24 @@ HOST_IP :=
 MACHINE :=
 ifeq ($(HOST_IP),'localhost')
 	MACHINE = LOCAL
+	LOCAL_BOOTSTRAP_FILE := ansible/bootstrap-local.yml
+	LOCAL_HOSTS_FILE := ansible/local-mac-hosts
 else
 	MACHINE = VM
+ifeq ($(OS),MAC)
+ifeq ($(call get_ip_type,$(HOST_IP)),'private')
+	VM_BOOTSTRAP_FILE := ansible/bootstrap-local-vm.yml
+	VM_HOSTS_FILE := ansible/local-vm-hosts
+else
+	VM_BOOTSTRAP_FILE := ansible/bootstrap-cloud-vm.yml
+	VM_HOSTS_FILE :=
+endif
+else
+  $(error "Only supporting mac os hosts for VMs at this point")
+endif
 endif
 
-VM_BOOTSTRAP_FILE := ansible/bootstrap-vm.yml
-LOCAL_BOOTSTRAP_FILE := ansible/bootstrap-local.yml
 BOOTSTRAP_FILE = $($(MACHINE)_BOOTSTRAP_FILE)
-
-VM_HOSTS_FILE := ansible/vmhosts
-LOCAL_HOSTS_FILE := ansible/localmachinehosts
 HOSTS_FILE = $($(MACHINE)_HOSTS_FILE)
 
 VM_CONN_TYPE := paramiko
@@ -62,7 +71,7 @@ deps : $(DEPS_STATEFILE)
 bootstrap : $(BOOTSTRAP_STATEFILE)
 
 $(BOOTSTRAP_STATEFILE) : $(DEPS_STATEFILE) $(BOOTSTRAP_FILE) $(HOSTS_FILE)
-	$(AT)./bin/provision.py bootstrap --host=$(HOST_IP) $(IGNORE_DRY_RUN)
+	$(AT)ansible-playbook -i $(VM_HOSTS_FILE) $(VM_BOOTSTRAP_FILE)
 	$(AT)touch $(BOOTSTRAP_STATEFILE)
 
 build : bootstrap $(TASK_FILES) $(ROLES_FILES) ansible/main.yml
