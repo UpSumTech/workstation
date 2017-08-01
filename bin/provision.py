@@ -81,7 +81,7 @@ class Options(object):
 
 ######### Internal function ###########
 
-def _run_playbook(provision_type, host, extra_vars={}, dry_run=True):
+def _run_playbook(provision_type, host, playbook_file, extra_vars={}, dry_run=True):
     """Runs the ansible playbook
     Instead of running ansible as a executable, run ansible through it's API
     """
@@ -92,14 +92,9 @@ def _run_playbook(provision_type, host, extra_vars={}, dry_run=True):
     loader = DataLoader()
     options = Options()
 
-    if provision_type == 'bootstrap':
-        if host == 'localhost':
-            playbook = os.path.join(os.getcwd(), 'ansible/bootstrap-local.yml')
-        else:
-            #  import pdb; pdb.set_trace()
-            playbook = os.path.join(os.getcwd(), 'ansible/bootstrap-vm.yml')
-    elif provision_type == 'developer':
-        playbook = os.path.join(os.getcwd(), 'ansible/main.yml')
+    #  import pdb; pdb.set_trace()
+    if provision_type == 'developer':
+        playbook = os.path.join(os.getcwd(), playbook_file)
         options.become_user = 'developer'
     else:
         raise BadArgument('The playbook type provided is not valid')
@@ -108,6 +103,7 @@ def _run_playbook(provision_type, host, extra_vars={}, dry_run=True):
     options.check=dry_run
     options.connection = 'ssh'
     options.become = True
+    options.verbosity = True
     options.become_method = 'sudo'
 
     hosts = NamedTemporaryFile(delete=False)
@@ -133,12 +129,12 @@ def _run_playbook(provision_type, host, extra_vars={}, dry_run=True):
 
 __doc__="""Configures a workstation on a virtual machine or localhost
 Usage:
-    provision.py bootstrap --host=<host> [--ignore-dry-run]
-    provision.py developer --host=<host> [--ignore-dry-run]
+    provision.py developer --host=<host> --playbook=<playbook> [--ignore-dry-run]
     provision.py (-h | --help)
 
 Options:
     -h --help                                        You are looking at this option right now.
+    --playbook=<playbook>                                    The ip address of the host or 'localhost' to run the playbook on. If not specified this will be the localhost.
     --host=<host>                                    The ip address of the host or 'localhost' to run the playbook on. If not specified this will be the localhost.
     --ignore-dry-run                                 This option will ignore the dry run and execute the playbooks
 """
@@ -154,16 +150,17 @@ def main(args=None):
     dry_run = False if args['--ignore-dry-run'] else True
 
     extra_vars = dict(
-        ansible_python_interpreter="/usr/bin/env python")
+        homebrew_github_api_token=os.environ.get('HOMEBREW_GITHUB_API_TOKEN'),
+        playbook_type=os.environ.get('PLAYBOOK_TYPE'),
+        aws_access_key_id=os.environ.get('AWS_ACCESS_KEY_ID'),
+        aws_secret_access_key=os.environ.get('AWS_SECRET_ACCESS_KEY'),
+        ansible_python_interpreter="/usr/bin/env python"
+        )
 
-    if args['bootstrap']:
-        extra_vars['homebrew_github_api_token'] = os.environ.get('HOMEBREW_GITHUB_API_TOKEN')
-        _run_playbook('bootstrap', args['--host'], extra_vars=extra_vars, dry_run=dry_run)
-    elif args['developer']:
-        extra_vars['homebrew_github_api_token'] = os.environ.get('HOMEBREW_GITHUB_API_TOKEN')
-        _run_playbook('developer', args['--host'], extra_vars=extra_vars, dry_run=dry_run)
+    if args['developer']:
+        _run_playbook('developer', args['--host'], args['--playbook'], extra_vars=extra_vars, dry_run=dry_run)
     else:
-        raise BadArgument('You need to provide a valid provision type. Can be one of bootstrap|developer.')
+        raise BadArgument('You need to provide a valid provision type. It can only be of type developer.')
 
 ######### Entrypoint ###########
 

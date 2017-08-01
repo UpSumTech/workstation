@@ -1,11 +1,8 @@
 ---
 # These tasks set up various cli tools and utils
 
-- name: Install Linuxbrew util packages
-  shell: /bin/bash -ic "brew install {{ ' '.join(homebrew.utils) }}"
-
 - name: Install tools using pip
-  shell: /bin/bash -ic "pip install {{ item }}"
+  shell: pip install "{{ item }}"
   with_items:
     - maybe
     - doitlive
@@ -13,7 +10,11 @@
     - supervisor
     - csvkit
     - shyaml
-    - credstash
+    - mycli
+    - pgcli
+    - cheat
+  become: true
+  become_user: root
 
 - name: Setup tldr for bash
   shell: >
@@ -47,13 +48,15 @@
   become_user: root
 
 - name: Install tools using gem
-  shell: /bin/bash -ic "gem install {{ item }}"
+  shell: gem install "{{ item }}"
   with_items:
     - bundler
     - rake
     - thor
     - fpm
     - pleaserun
+  become: true
+  become_user: root
 
 - name: Install wiremock
   shell: >
@@ -108,6 +111,8 @@
 - apt:
     name: "{{ item }}"
     state: present
+    force: yes
+    install_recommends: no
   with_items: "{{ apt.utils }}"
   become: true
   become_user: root

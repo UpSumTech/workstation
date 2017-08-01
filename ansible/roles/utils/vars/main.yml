@@ -6,35 +6,19 @@ apt:
     - traceroute # tool to diagnose network connectivity
     - tcptrace # tool to analyze tcpdump output
     - ngrep # grep for the network layer
-
-# utils to install through homebrew
-homebrew:
-  utils:
     - colordiff # diffing tool
     - tree # display folder structure
-    - pstree # process info
+    - psmisc # process utils
     - mtr # combines ping and traceroute
     - htop # better top
-    - ag # grepping tool
+    - silversearcher-ag # grepping tool
     - jq # json parser
     - tig # git client
     - wireshark # network analyzing and troubleshooting tool
-    - mycli # better mysql client
-    - pgcli # better postgres client
-    - homebrew/dupes/krb5 # prerequisite for ansible
     - ansible # you are using this
     - awscli # aws cli
-    - pcre # perl regex matching
-    - jpeg # image manipulation lib
-    - libpng # image manipulation lib for PNG files
-    - libtiff # TIFF library and utilities
-    - freetype # font rendering lib
     - imagemagick # image manipulation library in multiple formats
     - fio # T/O stress test/benchmarking tool
-    - pyenv # manage python versions
-    - rbenv # manage ruby versions
-    - nvm # manage node versions
-    - jenv # manage java versions
 
 # bash_it completions plugins and aliases
 bash_it:

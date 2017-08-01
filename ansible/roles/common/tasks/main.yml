@@ -10,14 +10,21 @@
   with_items:
     - curl
     - git
+    - unzip
     - libffi-dev
+    - libpq-dev
+    - libsqlite3-dev
     - libssl-dev
     - libbz2-dev
     - libcurl4-openssl-dev
     - libexpat-dev
     - libncurses-dev
+    - libexpat-dev
     - build-essential
+    - zlib1g-dev
     - xclip
+    - m4
+    - gcc
     - cmake
     - scons
     - autoconf
@@ -27,8 +34,56 @@
     - flex
     - bison
     - python-pip
+    - python
+    - perl
+    - ruby
+    - node
+    - golang
+    - default-jdk
+    - lua5.1
+    - luajit
+    - parallel
+    - coreutils
+    - moreutils
+    - libjpeg-dev
+    - libfreetype6
+    - libfreetype6-dev
+    - zlib1g-dev
   become: true
   become_user: root
+
+- pip:
+    name: credstash
+  become: true
+  become_user: root
+
+- pip:
+    name: autoenv
+  become: true
+  become_user: root
+
+- name: Install package managers for languages
+  shell: >
+    rm -rf /home/developer/.pyenv &&
+    git clone https://github.com/pyenv/pyenv.git /home/developer/.pyenv &&
+    git clone https://github.com/pyenv/pyenv-virtualenv.git /home/developer/.pyenv/plugins/pyenv-virtualenv &&
+    rm -rf /home/developer/.rbenv &&
+    git clone https://github.com/rbenv/rbenv.git /home/developer/.rbenv &&
+    rm -rf /home/developer/.nvm &&
+    git clone https://github.com/creationix/nvm.git /home/developer/.nvm &&
+    rm -rf /home/developer/.jenv &&
+    git clone https://github.com/gcuisinier/jenv.git /home/developer/.jenv &&
+    echo "source `which activate.sh`" >> /home/developer/.bashrc &&
+    echo 'export PYENV_ROOT="$HOME/.pyenv"' >> /home/developer/.bashrc &&
+    echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> /home/developer/.bashrc &&
+    echo 'eval "$(pyenv init -)"' >> /home/developer/.bashrc &&
+    echo 'eval "$(pyenv virtualenv-init -)"' >> /home/developer/.bashrc &&
+    echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> /home/developer/.bashrc &&
+    echo 'export NVM_DIR="$HOME/.nvm"' >> /home/developer/.bashrc &&
+    echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"' >> /home/developer/.bashrc &&
+    echo '[-s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"' >> /home/developer/.bashrc &&
+    echo 'export PATH="$HOME/.jenv/bin:$PATH"' >> /home/developer/.bashrc &&
+    echo 'eval "$(jenv init -)"' >> /home/developer/.bashrc
 
 - file: state=directory
     dest=/home/developer/bin

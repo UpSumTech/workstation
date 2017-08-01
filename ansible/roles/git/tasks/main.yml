@@ -1,6 +1,6 @@
 ---
 
-# These tasks sets up git. We need a system version of git for homebrew to be installed
+# These tasks sets up git
 - apt: name=git state=present update_cache=yes install_recommends=no
   become: true
   become_user: root

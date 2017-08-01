@@ -33,20 +33,32 @@ DEPS_SCRIPT = $(INSTALL_$(OS)_DEPS_SCRIPT)
 
 HOST_IP :=
 
+PLAYBOOK_FILE :=
 MACHINE :=
+PLAYBOOK_TYPE :=
 ifeq ($(HOST_IP),'localhost')
+ifeq ($(OS),MAC)
 	MACHINE = LOCAL
 	LOCAL_BOOTSTRAP_FILE := ansible/bootstrap-local.yml
 	LOCAL_HOSTS_FILE := ansible/local-mac-hosts
+	PLAYBOOK_FILE := ansible/local-mac-main.yml
+	PLAYBOOK_TYPE = MAC_LOCAL
+else
+  $(error "Only supporting mac os hosts for local at this point")
+endif
 else
 	MACHINE = VM
 ifeq ($(OS),MAC)
 ifeq ($(call get_ip_type,$(HOST_IP)),'private')
 	VM_BOOTSTRAP_FILE := ansible/bootstrap-local-vm.yml
 	VM_HOSTS_FILE := ansible/local-vm-hosts
+	PLAYBOOK_FILE := ansible/local-vm-main.yml
+	PLAYBOOK_TYPE = MAC_VM
 else
 	VM_BOOTSTRAP_FILE := ansible/bootstrap-cloud-vm.yml
+	PLAYBOOK_FILE := ansible/cloud-vm-main.yml
 	VM_HOSTS_FILE :=
+	PLAYBOOK_TYPE = CLOUD_VM
 endif
 else
   $(error "Only supporting mac os hosts for VMs at this point")
@@ -74,8 +86,8 @@ $(BOOTSTRAP_STATEFILE) : $(DEPS_STATEFILE) $(BOOTSTRAP_FILE) $(HOSTS_FILE)
 	$(AT)ansible-playbook -i $(VM_HOSTS_FILE) $(VM_BOOTSTRAP_FILE)
 	$(AT)touch $(BOOTSTRAP_STATEFILE)
 
-build : bootstrap $(TASK_FILES) $(ROLES_FILES) ansible/main.yml
-	$(AT)./bin/provision.py developer --host=$(HOST_IP) $(IGNORE_DRY_RUN)
+build : bootstrap $(TASK_FILES) $(ROLES_FILES) $(PLAYBOOK_FILE)
+	$(AT)PLAYBOOK_TYPE=$(PLAYBOOK_TYPE) ./bin/provision.py developer --host=$(HOST_IP) --playbook=$(PLAYBOOK_FILE) $(IGNORE_DRY_RUN)
 
 clean :
 	$(AT)[ -f "$(BOOTSTRAP_STATEFILE)" ] && rm $(BOOTSTRAP_STATEFILE); echo "Nothing to clean"
@@ -94,7 +106,7 @@ help :
 ##########################################################################################
 ## Plumbing
 
-$(DEPS_STATEFILE) : $(DEPS_SCRIPT)
+$(DEPS_STATEFILE) : $(DEPS_SCRIPT) requirements.txt
 	mkdir -p .make
 	cat $(DEPS_SCRIPT) | bash
 	touch $(DEPS_STATEFILE)
