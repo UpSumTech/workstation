@@ -59,6 +59,8 @@
   become: true
   become_user: root
 
-- name: Install docker-py python client for docker
-  shell: /bin/bash -ic "pip install docker-py"
+- pip:
+    name: autoenv
+  become: true
+  become_user: root
   when: is_docker_installed|success

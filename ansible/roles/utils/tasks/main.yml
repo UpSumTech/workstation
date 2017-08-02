@@ -70,24 +70,22 @@
     group=developer
 
 - name: Install npm utilities
-  shell: /bin/bash -ic "npm install -g {{ item }}"
+  shell: npm install -g "{{ item }}"
   with_items:
     - how2
     - cpy-cli
-    - trash-cli
-    - empty-trash-cli
     - strip-json-comments-cli
     - doctoc
     - git-commander
-    - gistup
     - pretty-bytes-cli
     - normalize-newline-cli
     - speed-test
-    - weather-cli
     - strip-css-comments-cli
     - localtunnel
     - json2csv
     - xml2json-command
+  become: true
+  become_user: root
 
 - name: Add an alias for rm
   shell: >
@@ -116,18 +114,6 @@
   with_items: "{{ apt.utils }}"
   become: true
   become_user: root
-
-- name: Install go utilities
-  shell: /bin/bash -ic "go get -u '{{ item }}'"
-  with_items:
-    - github.com/rakyll/boom
-    - github.com/tsenart/vegeta
-    - github.com/msoap/shell2http
-    - github.com/cortesi/modd/cmd/modd
-    - github.com/jteeuwen/go-bindata/...
-    # - github.com/quii/mockingjay-server
-    - github.com/tylertreat/comcast
-    # - github.com/buger/gor
 
 - name: Install concurrent multi server mysql client
   shell: /bin/bash -ic "cd $HOME/bin && curl -s -S -L -0 https://github.com/github/ccql/releases/download/v1.1.4/ccql-binary-linux-20160316084430.tar.gz | tar xz"
