@@ -63,26 +63,6 @@
   become: true
   become_user: root
 
-- name: Install golang
-  shell: >
-    cd /home/developer &&
-    wget https://storage.googleapis.com/golang/go1.6.linux-amd64.tar.gz &&
-    tar -xvf go1.6.linux-amd64.tar.gz &&
-    rm go1.6.linux-amd64.tar.gz &&
-    mv go /usr/local &&
-    touch /etc/profile.d/go_vars.sh &&
-    chmod +x /etc/profile.d/go_vars.sh &&
-    echo 'export GOROOT=/usr/local/go' >> /etc/profile.d/go_vars.sh &&
-    echo 'export GOPATH=$HOME/go' >> /etc/profile.d/go_vars.sh &&
-    echo 'export PATH=$GOROOT/bin:$GOPATH/bin:$PATH' >> /etc/profile.d/go_vars.sh &&
-    echo 'export GOROOT=/usr/local/go' >> /home/developer/.bashrc &&
-    echo 'export GOPATH=$HOME/go' >> /home/developer/.bashrc &&
-    echo 'export PATH=$GOROOT/bin:$GOPATH/bin:$PATH' >> /home/developer/.bashrc &&
-    mkdir -p /home/developer/go &&
-    chown -R developer:developer /home/developer/go
-  become: true
-  become_user: root
-
 - name: Install package managers for languages
   shell: >
     rm -rf /home/developer/.pyenv &&
