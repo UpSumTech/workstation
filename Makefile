@@ -32,7 +32,6 @@ INSTALL_LINUX_DEPS_SCRIPT := bin/install_linux_deps.sh
 DEPS_SCRIPT = $(INSTALL_$(OS)_DEPS_SCRIPT)
 
 HOST_IP :=
-
 MACHINE :=
 PLAYBOOK_TYPE :=
 ifeq ($(HOST_IP),'localhost')

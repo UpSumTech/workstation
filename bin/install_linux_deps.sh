@@ -10,5 +10,5 @@ echo "source `which activate.sh`" >> ~/.bashrc
 source ~/.bashrc
 pushd .
 cd "$ROOT_DIR"
-pip install -r requirements.txt
+pip install -r $(ROOT_DIR)/requirements.txt
 popd
