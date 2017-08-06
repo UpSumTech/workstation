@@ -182,20 +182,26 @@ def main(args=None):
 
     extra_vars = dict(
         playbook_type=os.environ.get('PLAYBOOK_TYPE'),
-        aws_access_key_id=os.environ.get('AWS_ACCESS_KEY_ID'),
-        aws_secret_access_key=os.environ.get('AWS_SECRET_ACCESS_KEY'),
         ansible_python_interpreter="/usr/bin/env python"
         )
 
     host_type = get_host_type()
     if isinstance(host_type, MacOS):
-        if not os.environ.get('HOMEBREW_GITHUB_API_TOKEN'):
-            die("You need to set a github token for homebrew to use")
-        extra_vars['homebrew_github_api_token'] = os.environ.get('HOMEBREW_GITHUB_API_TOKEN'),
+        if not os.environ.get('AWS_ACCESS_KEY_ID'):
+            die("You need to set a aws access key id for aws cli and credstash to use")
+        if not os.environ.get('AWS_SECRET_ACCESS_KEY'):
+            die("You need to set a aws secret access key for aws cli and credstash to use")
+        aws_access_key_id=os.environ.get('AWS_ACCESS_KEY_ID'),
+        aws_secret_access_key=os.environ.get('AWS_SECRET_ACCESS_KEY'),
     elif isinstance(host_type, Linux):
-        print('No special config needed for Linux VMs')
+        if not os.environ.get('AWS_ACCESS_KEY_ID'):
+            die("You need to set a aws access key id for aws cli and credstash to use")
+        if not os.environ.get('AWS_SECRET_ACCESS_KEY'):
+            die("You need to set a aws secret access key for aws cli and credstash to use")
+        extra_vars['aws_access_key_id'] = os.environ.get('AWS_ACCESS_KEY_ID'),
+        extra_vars['aws_secret_access_key'] = os.environ.get('AWS_SECRET_ACCESS_KEY'),
     elif isinstance(host_type, Ec2Linux):
-        print('No special config needed Ec2 Linux machines')
+        print('No aws cli config needed Ec2 Linux machines. The machines should be launched with the correct role.')
     else:
         die('Not ready to handle this type of OS right now')
 

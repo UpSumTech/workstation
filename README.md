@@ -8,7 +8,7 @@ This repo contains scripts to setup a developer machine in a vagrant VM or local
 
 1. Virtualbox, Vagrant, ansible
 
-    If you are on a mac, you can install virtualbox and vagrant using homebrew
+    If you are on a mac, you can install virtualbox and vagrant
     Also, install ansible using pip on a mac
 
     ```shell
