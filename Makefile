@@ -34,7 +34,7 @@ DEPS_SCRIPT = $(INSTALL_$(OS)_DEPS_SCRIPT)
 HOST_IP :=
 MACHINE :=
 PLAYBOOK_TYPE :=
-ifeq ($(HOST_IP),'localhost')
+ifeq ($(HOST_IP),localhost)
 	MACHINE = LOCAL
 	LOCAL_HOSTS_FILE := ansible/local-hosts
 ifeq ($(OS),MAC)
