@@ -33,39 +33,30 @@ DEPS_SCRIPT = $(INSTALL_$(OS)_DEPS_SCRIPT)
 
 HOST_IP :=
 
-PLAYBOOK_FILE :=
 MACHINE :=
 PLAYBOOK_TYPE :=
 ifeq ($(HOST_IP),'localhost')
-ifeq ($(OS),MAC)
 	MACHINE = LOCAL
-	LOCAL_BOOTSTRAP_FILE := ansible/bootstrap-local.yml
-	LOCAL_HOSTS_FILE := ansible/local-mac-hosts
-	PLAYBOOK_FILE := ansible/local-mac-main.yml
+	LOCAL_HOSTS_FILE := ansible/local-hosts
+ifeq ($(OS),MAC)
 	PLAYBOOK_TYPE = MAC_LOCAL
 else
-  $(error "Only supporting mac os hosts for local at this point")
+	PLAYBOOK_TYPE = CLOUD_VM
 endif
 else
 	MACHINE = VM
 ifeq ($(OS),MAC)
-ifeq ($(call get_ip_type,$(HOST_IP)),'private')
-	VM_BOOTSTRAP_FILE := ansible/bootstrap-local-vm.yml
 	VM_HOSTS_FILE := ansible/local-vm-hosts
-	PLAYBOOK_FILE := ansible/local-vm-main.yml
 	PLAYBOOK_TYPE = MAC_VM
 else
-	VM_BOOTSTRAP_FILE := ansible/bootstrap-cloud-vm.yml
-	PLAYBOOK_FILE := ansible/cloud-vm-main.yml
 	VM_HOSTS_FILE :=
 	PLAYBOOK_TYPE = CLOUD_VM
-endif
-else
   $(error "Only supporting mac os hosts for VMs at this point")
 endif
 endif
 
-BOOTSTRAP_FILE = $($(MACHINE)_BOOTSTRAP_FILE)
+BOOTSTRAP_FILE = ansible/bootstrap.yml
+PLAYBOOK_FILE := ansible/main.yml
 HOSTS_FILE = $($(MACHINE)_HOSTS_FILE)
 
 VM_CONN_TYPE := paramiko
