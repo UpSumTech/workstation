@@ -99,4 +99,5 @@ help :
 $(DEPS_STATEFILE) : $(DEPS_SCRIPT) requirements.txt
 	mkdir -p .make
 	cat $(DEPS_SCRIPT) | bash
+	pip install -r requirements.txt
 	touch $(DEPS_STATEFILE)
