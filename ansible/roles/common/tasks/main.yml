@@ -42,7 +42,7 @@
     - python
     - perl
     - ruby
-    - node
+    - nodejs
     - default-jdk
     - lua5.1
     - luajit
