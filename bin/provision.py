@@ -5,18 +5,49 @@
 import sys
 from docopt import docopt
 import os
+import re
 import json
+from fabric.api import local
+import urllib2
 from tempfile import NamedTemporaryFile
 from ansible.parsing.dataloader import DataLoader
 from ansible.vars import VariableManager
 from ansible.inventory import Inventory
 from ansible.executor import playbook_executor
 
+######### Wrapper OS Classes ##################
+class MacOS:
+    def __init__(self):
+        self.name = 'Darwin'
+
+class Linux:
+    def __init__(self):
+        self.name = 'Linux'
+
+class Ec2Linux:
+    def __init__(self, hostname):
+        self.name = 'Ec2Linux'
+        self.hostname = hostname
+
 ######### Utility functions ##################
 
 def die(msg):
     sys.stderr.write("Error : %s\n" % msg)
     sys.exit(1)
+
+os_type_regex = re.compile('^(Darwin|Linux)$')
+def get_host_type():
+    os_type = local('uname -s', capture=True)
+    assert os_type_regex.match(os_type)
+    if os_type == 'Darwin':
+        os_object = MacOS()
+    else:
+        try:
+            ec2_machine_hostname = urllib2.urlopen('http://169.254.169.254/latest/meta-data/hostname').read()
+            os_object = Ec2Linux(ec2_machine_hostname)
+        except (urllib2.URLError):
+            os_object = Linux()
+    return os_object
 
 ######### Error classes ######################
 
@@ -150,12 +181,23 @@ def main(args=None):
     dry_run = False if args['--ignore-dry-run'] else True
 
     extra_vars = dict(
-        homebrew_github_api_token=os.environ.get('HOMEBREW_GITHUB_API_TOKEN'),
         playbook_type=os.environ.get('PLAYBOOK_TYPE'),
         aws_access_key_id=os.environ.get('AWS_ACCESS_KEY_ID'),
         aws_secret_access_key=os.environ.get('AWS_SECRET_ACCESS_KEY'),
         ansible_python_interpreter="/usr/bin/env python"
         )
+
+    host_type = get_host_type()
+    if isinstance(host_type, MacOS):
+        if not os.environ.get('HOMEBREW_GITHUB_API_TOKEN'):
+            die("You need to set a github token for homebrew to use")
+        extra_vars['homebrew_github_api_token'] = os.environ.get('HOMEBREW_GITHUB_API_TOKEN'),
+    elif isinstance(host_type, Linux):
+        print('No special config needed for Linux VMs')
+    elif isinstance(host_type, Ec2Linux):
+        print('No special config needed Ec2 Linux machines')
+    else:
+        die('Not ready to handle this type of OS right now')
 
     if args['developer']:
         _run_playbook('developer', args['--host'], args['--playbook'], extra_vars=extra_vars, dry_run=dry_run)
@@ -167,9 +209,6 @@ def main(args=None):
 ## sanity check for correct virtualenv
 if not 'workstation' in os.environ.get('VIRTUAL_ENV',''):
     die("Load the virtualenv by cd ing out and back into the root of the workstation")
-
-if not os.environ.get('HOMEBREW_GITHUB_API_TOKEN'):
-    die("You need to set a github token for homebrew to use")
 
 ## call main
 if __name__ == '__main__':
