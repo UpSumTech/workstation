@@ -187,6 +187,8 @@ def main(args=None):
 
     host_type = get_host_type()
     if isinstance(host_type, MacOS):
+        if not 'workstation' in os.environ.get('VIRTUAL_ENV',''):
+            die("Load the virtualenv by cd ing out and back into the root of the workstation")
         if not os.environ.get('AWS_ACCESS_KEY_ID'):
             die("You need to set a aws access key id for aws cli and credstash to use")
         if not os.environ.get('AWS_SECRET_ACCESS_KEY'):
@@ -194,6 +196,8 @@ def main(args=None):
         aws_access_key_id=os.environ.get('AWS_ACCESS_KEY_ID'),
         aws_secret_access_key=os.environ.get('AWS_SECRET_ACCESS_KEY'),
     elif isinstance(host_type, Linux):
+        if not 'workstation' in os.environ.get('VIRTUAL_ENV',''):
+            die("Load the virtualenv by cd ing out and back into the root of the workstation")
         if not os.environ.get('AWS_ACCESS_KEY_ID'):
             die("You need to set a aws access key id for aws cli and credstash to use")
         if not os.environ.get('AWS_SECRET_ACCESS_KEY'):
@@ -211,10 +215,6 @@ def main(args=None):
         raise BadArgument('You need to provide a valid provision type. It can only be of type developer.')
 
 ######### Entrypoint ###########
-
-## sanity check for correct virtualenv
-if not 'workstation' in os.environ.get('VIRTUAL_ENV',''):
-    die("Load the virtualenv by cd ing out and back into the root of the workstation")
 
 ## call main
 if __name__ == '__main__':
