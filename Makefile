@@ -27,10 +27,6 @@ BOOTSTRAP_STATEFILE = .make/done_bootstrap
 
 OS := $(call get_os)
 
-INSTALL_MAC_DEPS_SCRIPT := bin/install_mac_deps.sh
-INSTALL_LINUX_DEPS_SCRIPT := bin/install_linux_deps.sh
-DEPS_SCRIPT = $(INSTALL_$(OS)_DEPS_SCRIPT)
-
 HOST_IP :=
 MACHINE :=
 PLAYBOOK_TYPE :=
@@ -96,8 +92,7 @@ help :
 ##########################################################################################
 ## Plumbing
 
-$(DEPS_STATEFILE) : $(DEPS_SCRIPT) requirements.txt
+$(DEPS_STATEFILE) : requirements.txt
 	mkdir -p .make
-	cat $(DEPS_SCRIPT) | bash
 	pip install -r requirements.txt
 	touch $(DEPS_STATEFILE)
