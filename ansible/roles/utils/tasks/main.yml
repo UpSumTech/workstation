@@ -116,7 +116,7 @@
   become_user: root
 
 - name: Install concurrent multi server mysql client
-  shell: /bin/bash -ic "cd $HOME/bin && curl -s -S -L -0 https://github.com/github/ccql/releases/download/v1.1.4/ccql-binary-linux-20160316084430.tar.gz | tar xz"
+  shell: /bin/bash -ic "cd /home/developer/bin && curl -s -S -L -0 https://github.com/github/ccql/releases/download/v1.1.4/ccql-binary-linux-20160316084430.tar.gz | tar xz"
 
 - name: Enable completions for bashit
   shell: /bin/bash -ic "bash-it enable {{ ' '.join(bash_it.completions) }}"
