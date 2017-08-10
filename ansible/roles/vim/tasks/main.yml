@@ -55,7 +55,8 @@
 
 - name: Get vim
   shell: >
-    cd "$HOME/lib" &&
+    mkdir -p /home/developer/lib &&
+    cd /home/developer/lib &&
     rm -rf vim >/dev/null 2>&1 &&
     git clone https://github.com/vim/vim
   sudo: no
