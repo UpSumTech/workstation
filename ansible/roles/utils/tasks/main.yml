@@ -5,7 +5,6 @@
   shell: pip install "{{ item }}"
   with_items:
     - maybe
-    - doitlive
     - percol
     - supervisor
     - csvkit
@@ -27,25 +26,6 @@
     owner=developer
     group=developer
     mode=662
-
-- apt_repository:
-    repo: 'ppa:russell-s-stewart/ppa'
-    state: present
-  become: true
-  become_user: root
-
-- apt: update_cache=yes
-  become: true
-  become_user: root
-
-- name: Install sshrc
-  apt:
-    name: sshrc
-    state: present
-    update_cache: yes
-    install_recommends: no
-  become: true
-  become_user: root
 
 - name: Install tools using gem
   shell: gem install "{{ item }}"
@@ -75,13 +55,10 @@
     - how2
     - cpy-cli
     - strip-json-comments-cli
-    - doctoc
     - git-commander
     - pretty-bytes-cli
     - normalize-newline-cli
     - speed-test
-    - strip-css-comments-cli
-    - localtunnel
     - json2csv
     - xml2json-command
   become: true
