@@ -6,4 +6,4 @@
   become_user: root
 
 - name: Initialize the git setup of the new user
-  shell: curl -sSL -H 'Cache-Control: no-cache' https://raw.githubusercontent.com/sumanmukherjee03/git-setup/master/bootstrap.sh | bash -i
+  shell: curl -sSL -H Cache-Control:no-cache https://raw.githubusercontent.com/sumanmukherjee03/git-setup/master/bootstrap.sh | bash -i
