@@ -26,18 +26,3 @@
   become: true
   become_user: root
   register: is_docker_installed
-
-- name: add-docker-group
-  group:
-    name: docker
-    state: present
-  become: true
-  become_user: root
-
-- name: add-developer-to-docker-group
-  user:
-    name: developer
-    append: yes
-    groups: docker
-  become: true
-  become_user: root

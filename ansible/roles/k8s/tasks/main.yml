@@ -1,0 +1,11 @@
+---
+# These tasks install kubectl and other k8s specific dependencies
+
+- shell: >
+    cd /usr/local/bin &&
+    curl -sSLO https://storage.googleapis.com/kubernetes-release/release/$(curl -sSL https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl &&
+    chmod +x ./kubectl
+  args:
+    executable: /bin/bash
+  become: true
+  become_user: root
