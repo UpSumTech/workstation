@@ -17,26 +17,9 @@
   become: true
   become_user: root
 
-- name: add-gpg-key-for-docker
-  apt_key:
-    keyserver: "hkp://p80.pool.sks-keyservers.net:80"
-    id: 58118E89F3A912897C070ADBF76221572C52609D
-    state: present
-  become: true
-  become_user: root
-
-- name: add-source-to-apt
-  apt_repository:
-    repo: "deb https://apt.dockerproject.org/repo ubuntu-trusty main"
-    state: present
-    filename: "docker.list"
-    update_cache: yes
-  become: true
-  become_user: root
-
 - name: install-docker-on-host
   apt:
-    name: docker-engine
+    name: docker
     state: present
     install_recommends: yes
     update_cache: yes
@@ -58,9 +41,3 @@
     groups: docker
   become: true
   become_user: root
-
-- pip:
-    name: autoenv
-  become: true
-  become_user: root
-  when: is_docker_installed|success
