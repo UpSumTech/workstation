@@ -19,7 +19,7 @@
 
 - name: install-docker-on-host
   apt:
-    name: docker
+    name: 'docker.io'
     state: present
     install_recommends: yes
     update_cache: yes
