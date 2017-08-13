@@ -26,3 +26,8 @@
   become: true
   become_user: root
   register: is_docker_installed
+
+- pip:
+    name: docker-compose
+  become: true
+  become_user: root
