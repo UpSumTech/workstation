@@ -87,6 +87,18 @@
     echo 'export PATH="$HOME/.jenv/bin:$PATH"' >> /home/developer/.bashrc &&
     echo 'eval "$(jenv init -)"' >> /home/developer/.bashrc
 
+- name: Add docker startup utility to your shell
+  copy: src=bash_utils.sh
+    dest=/home/developer/.bash_utils.sh
+    owner=developer
+    group=developer
+    mode=662
+  register: custom_bash_utils_added
+
+- name: Update bashrc to source the custom bash util fns
+  shell: echo 'if [[ -f ~/.bash_utils.sh ]]; then source ~/.bash_utils.sh; fi' >> /home/deveoper/.bash_profile
+  when: custom_bash_utils_added | success
+
 - file: state=directory
     dest=/home/developer/bin
     owner=developer
