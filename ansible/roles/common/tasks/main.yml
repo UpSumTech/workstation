@@ -96,7 +96,7 @@
   register: custom_bash_utils_added
 
 - name: Update bashrc to source the custom bash util fns
-  shell: echo 'if [[ -f ~/.bash_utils.sh ]]; then source ~/.bash_utils.sh; fi' >> /home/deveoper/.bash_profile
+  shell: echo 'if [[ -f ~/.bash_utils.sh ]]; then source ~/.bash_utils.sh; fi' >> /home/developer/.bash_profile
   when: custom_bash_utils_added | success
 
 - file: state=directory
