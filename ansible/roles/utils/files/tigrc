@@ -1,0 +1,7 @@
+bind status + !?git commit --amend # Ammend commit on status view
+bind main R !?git rebase -i %(commit) # Rebase commit on graph view
+bind main ! !?git revert %(commit) # Revert commit on graph view
+bind generic N !git notes edit %(commit) # Add notes to commit
+bind status D !?rm %(file) # Remove a file in status view
+bind main T !git tag %(prompt) %(commit) # Tag a commit on graph view
+bind stage <Enter> :/^@@ # Jump to the next chunk in stage view
