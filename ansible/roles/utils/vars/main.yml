@@ -6,6 +6,10 @@ apt:
     - traceroute # tool to diagnose network connectivity
     - tcptrace # tool to analyze tcpdump output
     - ngrep # grep for the network layer
+    - nmap # To scan networks, guess remote OS, ports etc
+    - iftop # Monitor network interfaces like top
+    - nethogs # Find the pids that is eating all your network bandwidth
+    - vnstat # Useful to stat the network interfaces
     - colordiff # diffing tool
     - tree # display folder structure
     - psmisc # process utils
