@@ -1,3 +1,8 @@
+function start_ssh_agent_and_add_key() {
+  eval `ssh-agent -s`
+  ssh-add -K ~/.ssh/id_rsa
+}
+
 function install_go_deps_for_project() {
   pushd .
   while [[ ! $(find . -maxdepth 1 -type d | grep '.git') =~ './.git' && ! $(basename $(cd $PWD/../.. && pwd)) =~ (github.com|golang.org|google.golang.org|gopkg.in) ]]; do
