@@ -15,6 +15,7 @@ apt:
     - psmisc # process utils
     - mtr # combines ping and traceroute
     - htop # better top
+    - slay # kill all processes for a specific user
     - silversearcher-ag # grepping tool
     - jq # json parser
     - tig # git client
