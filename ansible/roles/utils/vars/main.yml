@@ -24,6 +24,7 @@ apt:
     - awscli # aws cli
     - imagemagick # image manipulation library in multiple formats
     - fio # T/O stress test/benchmarking tool
+    - multitail # Tailing multiple logs from windows into a terminal
 
 # bash_it completions plugins and aliases
 bash_it:
