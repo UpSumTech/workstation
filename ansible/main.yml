@@ -1,15 +1,15 @@
 ---
 # This playbook deploys the workstation
 
-# - hosts: all
-#   become: true
-#   become_user: developer
-#   become_method: sudo
-#   gather_facts: true
-#   environment:
-#     HOME: '/home/developer'
-#   roles:
-#     - common
+- hosts: all
+  become: true
+  become_user: developer
+  become_method: sudo
+  gather_facts: true
+  environment:
+    HOME: '/home/developer'
+  roles:
+    - common
 
 - hosts: workstation
   become: true
@@ -17,12 +17,12 @@
   become_method: sudo
   gather_facts: true
   roles:
-    # - ssh
-    # - git
-    # - bash-it
+    - ssh
+    - git
+    - bash-it
     - vim
-    # - tmux
-    # - utils
-    # - docker
-    # - mysql
-    # - postgres
+    - tmux
+    - utils
+    - docker
+    - mysql
+    - postgres
