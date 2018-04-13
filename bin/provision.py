@@ -182,8 +182,12 @@ def main(args=None):
 
     extra_vars = dict(
         playbook_type=os.environ.get('PLAYBOOK_TYPE'),
-        ansible_python_interpreter="/usr/bin/env python"
+        ansible_python_interpreter="/usr/bin/env python",
+        git_user=os.environ.get('GIT_USER'),
+        git_email=os.environ.get('GIT_EMAIL')
         )
+    if os.environ.get('SUDO_PASSWD'):
+        extra_vars["ansible_sudo_pass"] = os.environ.get('SUDO_PASSWD')
 
     host_type = get_host_type()
     if isinstance(host_type, MacOS):
@@ -193,8 +197,8 @@ def main(args=None):
             die("You need to set a aws access key id for aws cli and credstash to use")
         if not os.environ.get('AWS_SECRET_ACCESS_KEY'):
             die("You need to set a aws secret access key for aws cli and credstash to use")
-        aws_access_key_id=os.environ.get('AWS_ACCESS_KEY_ID'),
-        aws_secret_access_key=os.environ.get('AWS_SECRET_ACCESS_KEY'),
+        extra_vars['aws_access_key_id']=os.environ.get('AWS_ACCESS_KEY_ID')
+        extra_vars['aws_secret_access_key']=os.environ.get('AWS_SECRET_ACCESS_KEY')
     elif isinstance(host_type, Linux):
         if not 'workstation' in os.environ.get('VIRTUAL_ENV',''):
             die("Load the virtualenv by cd ing out and back into the root of the workstation")
@@ -202,8 +206,8 @@ def main(args=None):
             die("You need to set a aws access key id for aws cli and credstash to use")
         if not os.environ.get('AWS_SECRET_ACCESS_KEY'):
             die("You need to set a aws secret access key for aws cli and credstash to use")
-        extra_vars['aws_access_key_id'] = os.environ.get('AWS_ACCESS_KEY_ID'),
-        extra_vars['aws_secret_access_key'] = os.environ.get('AWS_SECRET_ACCESS_KEY'),
+        extra_vars['aws_access_key_id'] = os.environ.get('AWS_ACCESS_KEY_ID')
+        extra_vars['aws_secret_access_key'] = os.environ.get('AWS_SECRET_ACCESS_KEY')
     elif isinstance(host_type, Ec2Linux):
         print('No aws cli config needed Ec2 Linux machines. The machines should be launched with the correct role.')
     else:

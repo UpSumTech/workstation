@@ -25,6 +25,21 @@ apt:
     - imagemagick # image manipulation library in multiple formats
     - fio # T/O stress test/benchmarking tool
     - multitail # Tailing multiple logs from windows into a terminal
+    - redis-server # Sets up redis server
+    - rabbitmq-server # Sets up rabbitmq
+    - passenger # Sets up passenger for serving web requests
+    - mycli # Better cli for mysql
+    - pgcli # Better cli for psql
+    - maven # Maven tooling for java
+    - mytop # View mysql processes with a top like interface
+    - pgtop # View postgres processes with a top like interface
+    - dnstop # Console tool to identify DNS traffic
+    - mysql-server # Sets up mysql server for development purposes
+    - postgresql # Sets up postgres server for development purposes
+    - postgresql-contrib
+    - sgrep # Grep structured files
+    - rbenv # Switch ruby versions
+    - ipcalc # Util to calculate ip addresses
 
 # bash_it completions plugins and aliases
 bash_it:

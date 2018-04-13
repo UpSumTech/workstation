@@ -1,7 +1,9 @@
 ---
 # These tasks set up tmux for development machine
 
-- shell: curl -s -S -L https://raw.githubusercontent.com/sumanmukherjee03/tmux_setup/master/bootstrap.sh | bash
+- shell: . "/home/developer/.bashrc" && curl -s -S -L https://raw.githubusercontent.com/sumanmukherjee03/tmux_setup/master/bootstrap.sh | bash -i
+  args:
+    executable: /bin/bash
 
 - file: path=/home/developer/.projects.json
         owner=developer

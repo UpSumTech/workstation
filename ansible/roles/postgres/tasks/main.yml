@@ -1,0 +1,27 @@
+---
+# This task sets up postgres server locally on the machine
+# Postgres can be locally used for development purposes and also to sort/filter large files or generate reports
+
+- name: Starts the postgres service if not running
+  shell: >
+    . /home/developer/.bashrc &&
+    command -v psql &&
+    { systemctl status postgresql | grep -i 'active: active' || systemctl start postgresql; }
+  args:
+    executable: /bin/bash
+  register: postgres_server_started
+
+- name: Setup the admin account
+  shell: >
+    . "/home/developer/.bashrc" &&
+    command -v psql &&
+    {%if aws_access_key_id is defined and aws_secret_access_key is defined %}
+    psql_passwd="$(AWS_ACCESS_KEY_ID={{ aws_access_key_id }} AWS_SECRET_ACCESS_KEY={{ aws_secret_access_key }} credstash -r us-west-2 -t kms-cred-stash get -n psql_local_admin_passwd env=development)" &&
+    {% else %}
+    psql_passwd="$(credstash -r us-west-2 -t kms-cred-stash get -n psql_local_admin_passwd env=development)" &&
+    {% endif %}
+    sudo -u postgres psql postgres -E -c "CREATE USER root WITH SUPERUSER; ALTER USER root WITH PASSWORD '$psql_passwd';" &&
+    sudo -u postgres psql postgres -E -c "CREATE DATABASE root;"
+  args:
+    executable: /bin/bash
+  when: postgres_server_started|success

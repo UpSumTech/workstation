@@ -1,0 +1,2 @@
+[[ -x /usr/bin/dircolors ]] && test -r $HOME/.dircolors && eval "$(dircolors -b $HOME/.dircolors)" || eval "$(dircolors -b)"
+[[ -f /etc/bashrc ]] && . /etc/bashrc

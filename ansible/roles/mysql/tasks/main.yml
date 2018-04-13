@@ -1,0 +1,28 @@
+---
+# This task sets up mysql server locally on the machine
+# Mysql can be locally used for development purposes and also to sort/filter large files or generate reports
+
+- name: Starts the mysql service if not running
+  shell: >
+    . /home/developer/.bashrc &&
+    command -v mysql &&
+    { systemctl status mysql | grep -i 'active' || systemctl start mysql; }
+  args:
+    executable: /bin/bash
+  register: mysql_server_started
+
+- name: Setup the admin account
+  shell: >
+    . "/home/developer/.bashrc" &&
+    command -v mysql &&
+    command -v mysqladmin &&
+    {%if aws_access_key_id is defined and aws_secret_access_key is defined %}
+    mysql_passwd="$(AWS_ACCESS_KEY_ID={{ aws_access_key_id }} AWS_SECRET_ACCESS_KEY={{ aws_secret_access_key }} credstash -r us-west-2 -t kms-cred-stash get -n mysql_local_admin_passwd env=development)" &&
+    {% else %}
+    mysql_passwd="$(credstash -r us-west-2 -t kms-cred-stash get -n mysql_local_admin_passwd env=development)" &&
+    {% endif %}
+    sudo -u root mysqladmin -u root password "$mysql_passwd" &&
+    sudo -u root mysql -h localhost --user=root --password="$mysql_passwd" --execute="SET @@global.sql_mode='';"
+  args:
+    executable: /bin/bash
+  when: mysql_server_started|success

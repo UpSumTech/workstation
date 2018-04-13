@@ -9,6 +9,10 @@ get_ip_type = $(if $(shell echo $(1) | grep -E '^(192\.168|10\.|172\.1[6789]\.|1
 ##########################################################################################
 ## Variables
 
+ROOT_DIR := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+GIT_USER :=
+GIT_EMAIL :=
+
 DEBUG := off
 AT_off := @
 AT_on :=
@@ -30,23 +34,33 @@ OS := $(call get_os)
 HOST_IP :=
 MACHINE :=
 PLAYBOOK_TYPE :=
+BASH_LOGIN_SOURCE :=
+INSTALL_DEPS_FILE :=
 ifeq ($(HOST_IP),localhost)
 	MACHINE = LOCAL
 	LOCAL_HOSTS_FILE := ansible/local-hosts
 ifeq ($(OS),MAC)
 	PLAYBOOK_TYPE = MAC_LOCAL
+	BASH_LOGIN_SOURCE = $$HOME/.bash_profile
+	INSTALL_DEPS_FILE = bin/mac_deps.sh
 else
-	PLAYBOOK_TYPE = CLOUD_VM
+	PLAYBOOK_TYPE = LINUX_LOCAL
+	BASH_LOGIN_SOURCE = $$HOME/.bashrc
+	INSTALL_DEPS_FILE = bin/linux_deps.sh
 endif
 else
 	MACHINE = VM
 ifeq ($(OS),MAC)
 	VM_HOSTS_FILE := ansible/local-vm-hosts
 	PLAYBOOK_TYPE = MAC_VM
+	BASH_LOGIN_SOURCE = $$HOME/.bashrc
+	INSTALL_DEPS_FILE = bin/mac_deps.sh
 else
 	VM_HOSTS_FILE :=
 	PLAYBOOK_TYPE = CLOUD_VM
-  $(error "Only supporting mac os hosts for VMs at this point")
+	BASH_LOGIN_SOURCE = $$HOME/.bashrc
+	INSTALL_DEPS_FILE = bin/linux_deps.sh
+  $(error "Only supporting mac os hosts for VMs at this point. Cloud VM hosts will be added afterwards")
 endif
 endif
 
@@ -69,11 +83,19 @@ deps : $(DEPS_STATEFILE)
 bootstrap : $(BOOTSTRAP_STATEFILE)
 
 $(BOOTSTRAP_STATEFILE) : $(DEPS_STATEFILE) $(BOOTSTRAP_FILE) $(HOSTS_FILE)
+ifdef SUDO_PASSWD
+	$(AT)ansible-playbook -i $(HOSTS_FILE) --user=$(shell whoami) --extra-vars "ansible_sudo_pass=$(SUDO_PASSWD)" $(BOOTSTRAP_FILE)
+else
 	$(AT)ansible-playbook -i $(HOSTS_FILE) $(BOOTSTRAP_FILE)
+endif
 	$(AT)touch $(BOOTSTRAP_STATEFILE)
 
 build : bootstrap $(TASK_FILES) $(ROLES_FILES) $(PLAYBOOK_FILE)
-	$(AT)PLAYBOOK_TYPE=$(PLAYBOOK_TYPE) ./bin/provision.py developer --host=$(HOST_IP) --playbook=$(PLAYBOOK_FILE) $(IGNORE_DRY_RUN)
+ifdef SUDO_PASSWD
+	$(AT)PLAYBOOK_TYPE=$(PLAYBOOK_TYPE) GIT_USER=$(GIT_USER) GIT_EMAIL=$(GIT_EMAIL) SUDO_PASSWD=$(SUDO_PASSWD) ./bin/provision.py developer --host=$(HOST_IP) --playbook=$(PLAYBOOK_FILE) $(IGNORE_DRY_RUN)
+else
+  $(AT)PLAYBOOK_TYPE=$(PLAYBOOK_TYPE) GIT_USER=$(GIT_USER) GIT_EMAIL=$(GIT_EMAIL) ./bin/provision.py developer --host=$(HOST_IP) --playbook=$(PLAYBOOK_FILE) $(IGNORE_DRY_RUN)
+endif
 
 clean :
 	$(AT)[ -f "$(BOOTSTRAP_STATEFILE)" ] && rm $(BOOTSTRAP_STATEFILE); echo "Nothing to clean"
@@ -93,6 +115,8 @@ help :
 ## Plumbing
 
 $(DEPS_STATEFILE) : requirements.txt
-	mkdir -p .make
+	mkdir -p $(ROOT_DIR)/.make
+	$(AT)./$(INSTALL_DEPS_FILE)
+	cd $(ROOT_DIR)
 	pip install -r requirements.txt
 	touch $(DEPS_STATEFILE)

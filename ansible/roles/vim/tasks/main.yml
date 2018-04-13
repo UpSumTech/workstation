@@ -1,26 +1,6 @@
 ---
 # These tasks install vim
 
-- name: Remove existing vim
-  apt: "name='{{ item }}' state=absent purge=yes"
-  with_items:
-    - vim
-    - vim-runtime
-    - gvim
-    - vim-tiny
-    - vim-common
-    - vim-gui-common
-  become: true
-  become_user: root
-  register: is_existing_vim_removed
-
-- name: Get vim build dependency
-  apt: "name=vim-gnome state=build-dep"
-  become: true
-  become_user: root
-  when: is_existing_vim_removed|success
-  register: is_vim_build_dep_installed
-
 - name: Install vim dependencies
   apt: "name='{{ item }}' state=present update_cache=yes install_recommends=no"
   with_items:
@@ -39,9 +19,11 @@
     - libx11-dev
     - libxpm-dev
     - libxt-dev
+    - tcl
+    - tcl-dev
+    - mono-devel
   become: true
   become_user: root
-  when: is_vim_build_dep_installed|success
   register: is_vim_dependencies_installed
 
 - name: Prep lua includes for vim
@@ -52,20 +34,15 @@
   become_user: root
   ignore_errors: yes
   when: is_vim_dependencies_installed|success
+  register: is_lua_prepped
 
-- name: Get vim
+- name: Configure and install vim
   shell: >
-    mkdir -p /home/developer/lib &&
-    cd /home/developer/lib &&
-    rm -rf vim >/dev/null 2>&1 &&
-    git clone https://github.com/vim/vim
-  sudo: no
-  when: is_vim_dependencies_installed|success
-  register: has_latest_vim
-
-- name: Configure vim
-  shell: >
-    cd /home/developer/lib/vim &&
+    . "/home/developer/.bashrc" &&
+    { vim_src_tmpdir="$(mktemp -d $TMPDIR/vim.XXXX)"; } &&
+    cd "$vim_src_tmpdir" &&
+    git clone https://github.com/vim/vim &&
+    cd vim &&
     make distclean &&
     ./configure --with-features=huge \
       --enable-multibyte \
@@ -73,36 +50,33 @@
       --enable-largefile \
       --disable-netbeans \
       --enable-pythoninterp \
-      --with-python-config-dir=/usr/lib/python2.7/config-x86_64-linux-gnu \
+      --with-python-config-dir="$(pyenv prefix 2.7.14/lib/python2.7/config)" \
       --enable-python3interp \
-      --with-python3-config-dir=/usr/lib/python3.4/config-3.4m-x86_64-linux-gnu \
+      --with-python3-config-dir="$($(pyenv prefix 3.4.4)/bin/python-config --configdir)" \
       --enable-perlinterp \
+      --enable-tclinterp \
       --enable-luainterp \
       --with-luajit \
       --enable-gui=auto \
       --enable-fail-if-missing \
       --with-lua-prefix=/usr/include/lua5.1 \
-      --prefix=/usr \
+      --prefix=/home/developer \
       --enable-clipboard \
       --enable-cscope &&
-    make
+    make &&
+    make install &&
+    rm -rf "$vim_src_tmpdir"
   args:
     executable: /bin/bash
-  become: true
-  become_user: root
-  when: is_vim_dependencies_installed|success and has_latest_vim|success
-  register: is_vim_configured
-
-- name: Install vim
-  shell: cd /home/developer/lib/vim && make install
-  become: true
-  become_user: root
-  when: is_vim_configured|success
+  when: is_vim_dependencies_installed|success
   register: is_vim_installed
 
 - name: Install vim config
   shell: >
+    . "/home/developer/.bashrc" &&
     curl -s -S -L https://raw.githubusercontent.com/sumanmukherjee03/vim_setup/master/bootstrap.sh | bash &&
     cd /home/developer/.vim &&
     make
+  args:
+    executable: /bin/bash
   when: is_vim_installed|success

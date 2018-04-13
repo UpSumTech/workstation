@@ -2,7 +2,7 @@
 # These tasks set up various cli tools and utils
 
 - name: Install tools using pip
-  shell: pip install "{{ item }}"
+  shell: . "/home/developer/.bashrc" && pip install "{{ item }}"
   with_items:
     - maybe
     - percol
@@ -12,13 +12,8 @@
     - mycli
     - pgcli
     - cheat
-  become: true
-  become_user: root
-
-- name: Setup tldr for bash
-  shell: >
-    curl -o /home/developer/bin/tldr https://raw.githubusercontent.com/raylee/tldr/master/tldr &&
-    chmod +x /home/developer/bin/tldr
+  args:
+    executable: /bin/bash
 
 - name: Add inputrc
   copy: src=inputrc
@@ -28,46 +23,54 @@
     mode=662
 
 - name: Install tools using gem
-  shell: gem install "{{ item }}"
+  shell: . "/home/developer/.bashrc" && gem install "{{ item }}"
   with_items:
     - bundler
     - rake
     - thor
     - fpm
     - pleaserun
-  become: true
-  become_user: root
+  args:
+    executable: /bin/bash
 
 - name: Install wiremock
   shell: >
+    . "/home/developer/.bashrc" &&
     cd /home/developer/lib &&
-    wget http://repo1.maven.org/maven2/com/github/tomakehurst/wiremock/1.57/wiremock-1.57-standalone.jar &&
-    mv wiremock-1.57-standalone.jar wiremock.jar
-
-- file: state=directory
-    dest=/home/developer/.tldr
-    owner=developer
-    group=developer
+    wget http://repo1.maven.org/maven2/com/github/tomakehurst/wiremock/2.9.0/wiremock-2.9.0.jar &&
+    mv wiremock-2.9.0.jar wiremock.jar
+  args:
+    executable: /bin/bash
 
 - name: Install npm utilities
-  shell: npm install -g "{{ item }}"
+  shell: . "/home/developer/.bashrc" && npm install -g "{{ item }}"
   with_items:
     - how2
     - cpy-cli
     - strip-json-comments-cli
+    - doctoc
     - git-commander
+    - gistup
     - pretty-bytes-cli
     - normalize-newline-cli
     - speed-test
     - json2csv
     - xml2json-command
-  become: true
-  become_user: root
+    - json2yaml
+    - localtunnel
+    - strip-css-comments-cli
+    - weather-cli
+    - trash-cli
+    - empty-trash-cli
+  args:
+    executable: /bin/bash
 
 - name: Add an alias for rm
   shell: >
+    . "/home/developer/.bashrc" &&
     echo 'alias rm=trash' >> /home/developer/.bash_it/custom/aliases.bash
-  sudo: no
+  args:
+    executable: /bin/bash
 
 - copy: src=agignore dest=/home/developer/.agignore owner=developer group=developer mode=600
 
@@ -75,14 +78,18 @@
 
 - name: Add universal ctags
   shell: >
+    { ctags_install_dir="$(mktemp -d "/tmp/ctags.XXXX")"; } &&
+    cd "$ctags_install_dir" &&
     git clone https://github.com/universal-ctags/ctags.git &&
     cd ctags &&
     ./autogen.sh &&
     ./configure &&
     make &&
     make install &&
-    cd .. &&
-    rm -rf ctags
+    cd ~ &&
+    rm -rf "$ctags_install_dir"
+  args:
+    executable: /bin/bash
   become: true
   become_user: root
 
@@ -92,6 +99,8 @@
   shell: >
     curl -s https://s3.amazonaws.com/download.draios.com/DRAIOS-GPG-KEY.public | apt-key add - &&
     curl -s -o /etc/apt/sources.list.d/draios.list http://download.draios.com/stable/deb/draios.list
+  args:
+    executable: /bin/bash
   become: true
   become_user: root
 
@@ -110,13 +119,21 @@
   become_user: root
 
 - name: Install concurrent multi server mysql client
-  shell: /bin/bash -ic "cd /home/developer/bin && curl -s -S -L -0 https://github.com/github/ccql/releases/download/v1.1.4/ccql-binary-linux-20160316084430.tar.gz | tar xz"
+  shell: . "/home/developer/.bashrc" && /bin/bash -ic "cd /home/developer/bin && curl -s -S -L -0 https://github.com/github/ccql/releases/download/v1.1.4/ccql-binary-linux-20160316084430.tar.gz | tar xz"
+  args:
+    executable: /bin/bash
 
 - name: Enable completions for bashit
-  shell: /bin/bash -ic "bash-it enable {{ ' '.join(bash_it.completions) }}"
+  shell: . "/home/developer/.bashrc" && /bin/bash -ic "bash-it enable {{ ' '.join(bash_it.completions) }}"
+  args:
+    executable: /bin/bash
 
 - name: Enable plugins for bashit
-  shell: /bin/bash -ic "bash-it enable plugin {{ ' '.join(bash_it.plugins) }}"
+  shell: . "/home/developer/.bashrc" && /bin/bash -ic "bash-it enable plugin {{ ' '.join(bash_it.plugins) }}"
+  args:
+    executable: /bin/bash
 
 - name: Enable aliases for bashit
-  shell: /bin/bash -ic "bash-it enable alias {{ ' '.join(bash_it.aliases) }}"
+  shell: . "/home/developer/.bashrc" && /bin/bash -ic "bash-it enable alias {{ ' '.join(bash_it.aliases) }}"
+  args:
+    executable: /bin/bash

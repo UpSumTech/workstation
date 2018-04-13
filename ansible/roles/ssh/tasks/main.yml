@@ -8,6 +8,7 @@
 
 - name: Pushes deploy users github private key to the remote developer users ssh keys
   shell: >
+    . "/home/developer/.bashrc" &&
     {%if aws_access_key_id is defined and aws_secret_access_key is defined %}
     AWS_ACCESS_KEY_ID={{ aws_access_key_id }} \
     AWS_SECRET_ACCESS_KEY={{ aws_secret_access_key }} \
@@ -22,10 +23,15 @@
       context: 'private'
     - name: 'id_rsa.pub'
       context: 'public'
+  args:
+    executable: /bin/bash
 
 - name: Add github as a known host to the ssh config of developer user
   shell: >
+    . "/home/developer/.bashrc" &&
     ssh-keyscan -H github.com >> /home/developer/.ssh/known_hosts && chmod 600 /home/developer/.ssh/known_hosts
+  args:
+    executable: /bin/bash
 
 - copy: src=config
         dest=/home/developer/.ssh/config

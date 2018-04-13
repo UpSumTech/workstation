@@ -1,3 +1,5 @@
+#! /usr/bin/env bash
+
 function start_ssh_agent_and_add_key() {
   eval `ssh-agent -s`
   ssh-add -K ~/.ssh/id_rsa

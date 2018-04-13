@@ -44,6 +44,7 @@ activate_profile_for_developer() {
   export AWS_ACCOUNT_ID="$DEVELOPER_AWS_ACCOUNT_ID"
   export AWS_ACCESS_KEY="$DEVELOPER_AWS_ACCESS_KEY_ID"
   export AWS_SECRET_KEY="$DEVELOPER_AWS_SECRET_ACCESS_KEY"
+  export AWS_DEFAULT_REGION="us-west-2"
   activate_profile_helper "developer"
 }
 
@@ -58,6 +59,7 @@ activate_profile_for_admin() {
   export AWS_ACCOUNT_ID="$ADMIN_AWS_ACCOUNT_ID"
   export AWS_ACCESS_KEY="$ADMIN_AWS_ACCESS_KEY_ID"
   export AWS_SECRET_KEY="$ADMIN_AWS_SECRET_ACCESS_KEY"
+  export AWS_DEFAULT_REGION="us-west-2"
   activate_profile_helper "admin"
 }
 
@@ -72,6 +74,7 @@ activate_profile_for_superuser() {
   export AWS_ACCOUNT_ID="$SUPERUSER_AWS_ACCOUNT_ID"
   export AWS_ACCESS_KEY="$SUPERUSER_AWS_ACCESS_KEY_ID"
   export AWS_SECRET_KEY="$SUPERUSER_AWS_SECRET_ACCESS_KEY"
+  export AWS_DEFAULT_REGION="us-west-2"
   activate_profile_helper "superuser"
 }
 
@@ -89,6 +92,7 @@ deactivate_profile_helper() {
   unset AWS_ACCESS_KEY_ID
   unset AWS_SECRET_ACCESS_KEY
   unset AWS_ACCOUNT_ID
+  unset AWS_DEFAULT_REGION
 }
 
 activate_help() {

@@ -6,4 +6,6 @@
   become_user: root
 
 - name: Initialize the git setup of the new user
-  shell: curl -sSL -H Cache-Control:no-cache https://raw.githubusercontent.com/sumanmukherjee03/git-setup/master/bootstrap.sh | bash -i
+  shell: . "/home/developer/.bashrc" && curl -sSL -H Cache-Control:no-cache https://raw.githubusercontent.com/sumanmukherjee03/git-setup/master/bootstrap.sh | bash -i /dev/stdin "{{ git_user }}" "{{ git_email }}" 
+  args:
+    executable: /bin/bash

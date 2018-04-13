@@ -3,8 +3,17 @@
 
 - file: path=/home/developer/.bash_it state=absent
 
+- name: Backup bashrc
+  shell: >
+    cp "/home/developer/.bashrc" "/home/developer/.bashrc.bak"
+  args:
+    executable: /bin/bash
+  register: bashrc_backedup
+
 - name: Clone bashit
   shell: >
+    . "/home/developer/.bashrc" &&
+    { [[ -d "/home/developer/.bash_it" ]] && rm -rf "/home/developer/.bash_it" || echo "Nothing to delete for bash-it"; } &&
     git clone --depth=1 https://github.com/Bash-it/bash-it.git /home/developer/.bash_it
   args:
     executable: /bin/bash
@@ -12,20 +21,24 @@
 
 - name: Install bashit
   shell: >
-    echo y > bash-it-install-option &&
-    /bin/bash /home/developer/.bash_it/install.sh < bash-it-install-option &&
-    rm bash-it-install-option
+    . "/home/developer/.bashrc" &&
+    echo y > $TMPDIR/bash-it-install-option &&
+    /bin/bash /home/developer/.bash_it/install.sh < $TMPDIR/bash-it-install-option &&
+    rm $TMPDIR/bash-it-install-option
   args:
     executable: /bin/bash
   register: bashit_installed
-  when: bashit_cloned | success
+  when: bashit_cloned|success and bashrc_backedup|success
 
 - name: Add composure
   shell: >
+    . "/home/developer/.bashrc" &&
     cd /home/developer/.bash_it/custom &&
     curl -L http://git.io/composure > composure.sh &&
     chmod +x composure.sh
-  when: bashit_installed | success
+  args:
+    executable: /bin/bash
+  when: bashit_installed|success
 
 - name: Add placeholder for custom aliases
   copy: src=aliases.bash
@@ -33,12 +46,12 @@
     owner=developer
     group=developer
     mode=662
-  when: bashit_installed | success
+  when: bashit_installed|success
 
-- name: Add utility to your shell
-  copy: src=utils.bash
-    dest=/home/developer/.bash_it/custom/utils.bash
-    owner=developer
-    group=developer
-    mode=662
-  when: bashit_installed | success
+- name: Add old bashrc back and then cleanup
+  shell: >
+    cat "/home/developer/.bashrc" "/home/developer/.bashrc.bak" | tee "/home/developer/.bashrc" &&
+    rm "/home/developer/.bashrc.bak"
+  args:
+    executable: /bin/bash
+  when: bashrc_backedup|success

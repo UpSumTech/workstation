@@ -1,6 +1,59 @@
 ---
 # These tasks set up some common binaries needed to work with
 
+- name: Get rid of dot local cause it messes python2.7 up in ubuntu
+  shell: test -d /home/developer/.local && rm -rf /home/developer/.local
+  args:
+    executable: /bin/bash
+  ignore_errors: yes
+
+- file: state=directory
+    dest=/home/developer/bin
+    owner=developer
+    group=developer
+
+- file: state=directory
+    dest=/home/developer/tmp
+    owner=developer
+    group=developer
+
+- file: state=directory
+    dest=/home/developer/share
+    owner=developer
+    group=developer
+
+- name: Add bashrc
+  copy: src=bashrc
+    dest=/home/developer/.bashrc
+    owner=developer
+    group=developer
+    mode=644
+  register: custom_bashrc_added
+
+- name: Add utilities to your shell
+  copy: src=bash_utils.sh
+    dest=/home/developer/.bash_utils.sh
+    owner=developer
+    group=developer
+    mode=775
+  register: custom_bash_utils_added
+
+- name: Update bashrc to source the custom bash util fns
+  shell: echo '[[ -f $HOME/.bash_utils.sh ]] && . $HOME/.bash_utils.sh' >> /home/developer/.bashrc
+  when: custom_bashrc_added|success and custom_bash_utils_added | success
+
+- name: Add env_vars file to your home dir
+  copy: src=env_vars.sh
+    dest=/home/developer/.env_vars.sh
+    owner=developer
+    group=developer
+  register: custom_env_vars_added
+
+- name: Add extra line to profile file
+  shell: echo '[[ -f $HOME/.env_vars.sh ]] && . $HOME/.env_vars.sh' >> /home/developer/.bashrc
+    mode=775
+  when: custom_bashrc_added|success and custom_env_vars_added|success
+
 - name: Install apt packages
   apt:
     name: "{{ item }}"
@@ -10,6 +63,8 @@
   with_items:
     - curl
     - git
+    - wget
+    - git-extras
     - unzip
     - libffi-dev
     - libpq-dev
@@ -23,10 +78,18 @@
     - zlib1g-dev
     - python-dev
     - python3-dev
+    - ruby-dev
+    - nodejs-dev
+    - gettext
+    - libyaml-dev
+    - libreadline-dev
+    - linux-libc-dev
     - libjpeg-dev
     - libfreetype6
     - libfreetype6-dev
     - build-essential
+    - sqlite
+    - tcl
     - xclip
     - m4
     - gcc
@@ -36,6 +99,8 @@
     - automake
     - autoconf-archive
     - libtool
+    - patch
+    - openssl
     - flex
     - bison
     - python-pip
@@ -43,6 +108,7 @@
     - perl
     - ruby
     - nodejs
+    - golang
     - default-jdk
     - lua5.1
     - luajit
@@ -50,66 +116,53 @@
     - coreutils
     - moreutils
     - npm
+    - tmux
   become: true
   become_user: root
 
-- pip:
-    name: credstash
-  become: true
-  become_user: root
-
-- pip:
-    name: autoenv
-  become: true
-  become_user: root
-
-- name: Install package managers for languages
+- name: Install version managers for langs
   shell: >
-    rm -rf /home/developer/.pyenv &&
-    git clone https://github.com/pyenv/pyenv.git /home/developer/.pyenv &&
-    git clone https://github.com/pyenv/pyenv-virtualenv.git /home/developer/.pyenv/plugins/pyenv-virtualenv &&
-    rm -rf /home/developer/.rbenv &&
-    git clone https://github.com/rbenv/rbenv.git /home/developer/.rbenv &&
-    rm -rf /home/developer/.nvm &&
-    git clone https://github.com/creationix/nvm.git /home/developer/.nvm &&
-    rm -rf /home/developer/.jenv &&
-    git clone https://github.com/gcuisinier/jenv.git /home/developer/.jenv &&
-    curl -sSL https://raw.githubusercontent.com/moovweb/gvm/master/binscripts/gvm-installer | bash &&
-    echo "source `which activate.sh`" >> /home/developer/.bashrc &&
-    echo 'export PYENV_ROOT="$HOME/.pyenv"' >> /home/developer/.bashrc &&
-    echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> /home/developer/.bashrc &&
-    echo 'eval "$(pyenv init -)"' >> /home/developer/.bashrc &&
-    echo 'eval "$(pyenv virtualenv-init -)"' >> /home/developer/.bashrc &&
-    echo 'export PATH="$HOME/.rbenv/bin:$PATH"' >> /home/developer/.bashrc &&
-    echo 'export NVM_DIR="$HOME/.nvm"' >> /home/developer/.bashrc &&
-    echo '[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"' >> /home/developer/.bashrc &&
-    echo '[ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"' >> /home/developer/.bashrc &&
-    echo 'export PATH="$HOME/.jenv/bin:$PATH"' >> /home/developer/.bashrc &&
-    echo 'eval "$(jenv init -)"' >> /home/developer/.bashrc
+    { [[ ! -d "/home/developer/.pyenv" ]] && (git clone https://github.com/pyenv/pyenv.git /home/developer/.pyenv && git clone https://github.com/pyenv/pyenv-virtualenv.git /home/developer/.pyenv/plugins/pyenv-virtualenv && git clone https://github.com/pyenv/pyenv-virtualenvwrapper.git /home/developer/.pyenv/plugins/pyenv-virtualenvwrapper); } &&
+    { [[ ! -d "/home/developer/.rbenv" ]] && (git clone https://github.com/rbenv/rbenv.git /home/developer/.rbenv && git clone https://github.com/rbenv/ruby-build.git /home/developer/.rbenv/plugins/ruby-build); } &&
+    { [[ ! -d "/home/developer/.nvm" ]] && (git clone https://github.com/creationix/nvm.git /home/developer/.nvm); } &&
+    { [[ ! -d "/home/developer/.jenv" ]] && (git clone https://github.com/gcuisinier/jenv.git /home/developer/.jenv); } &&
+    { [[ ! -d "/home/developer/.goenv" ]] && (git clone https://github.com/syndbg/goenv.git /home/developer/.goenv); } ||
+    echo 'language version managers already exist'
 
-- name: Add docker startup utility to your shell
-  copy: src=bash_utils.sh
-    dest=/home/developer/.bash_utils.sh
-    owner=developer
-    group=developer
-    mode=662
-  register: custom_bash_utils_added
+- name: Install tools using pip
+  shell: . "/home/developer/.bashrc" && pip install "{{ item }}"
+  with_items:
+    - credstash
+    - autoenv
+  args:
+    executable: /bin/bash
 
-- name: Update bashrc to source the custom bash util fns
-  shell: echo 'if [[ -f ~/.bash_utils.sh ]]; then source ~/.bash_utils.sh; fi' >> /home/developer/.bash_profile
-  when: custom_bash_utils_added | success
+- name: Install python2 version
+  shell: . "/home/developer/.bashrc" && { pyenv versions | grep '2.7.14' || pyenv install 2.7.14; }
+  args:
+    executable: /bin/bash
 
-- file: state=directory
-    dest=/home/developer/bin
-    owner=developer
-    group=developer
+- name: Install python3 version
+  shell: . "/home/developer/.bashrc" && { pyenv versions | grep '3.4.4' || pyenv install 3.4.4; }
+  args:
+    executable: /bin/bash
 
-- name: Add extra line to profile file
-  shell: echo ". $HOME/.env_vars" >> $HOME/.profile
+- name: Set global python version
+  shell: . "/home/developer/.bashrc" && pyenv global 2.7.14 3.4.4
+  args:
+    executable: /bin/bash
 
-- name: Add env_vars file to your home dir
-  copy: src=env_vars
-    dest=/home/developer/.env_vars
-    owner=developer
-    group=developer
-    mode=644
+- name: Install ruby version
+  shell: . "/home/developer/.bashrc" && { rbenv versions | grep '2.4.0' || rbenv install 2.4.0; } && rbenv global 2.4.0
+  args:
+    executable: /bin/bash
+
+- name: Install node version
+  shell: . "/home/developer/.bashrc" && { nvm ls | grep 'v8.9.3' || nvm install 8.9.3; } && nvm alias default 8.9.3
+  args:
+    executable: /bin/bash
+
+- name: Install golang version
+  shell: . "/home/developer/.bashrc" && { goenv versions | grep '1.9.2' || goenv install 1.9.2; } && goenv global 1.9.2
+  args:
+    executable: /bin/bash
