@@ -117,6 +117,7 @@
     - moreutils
     - npm
     - tmux
+    - dconf-cli
   become: true
   become_user: root
 

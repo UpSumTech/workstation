@@ -27,7 +27,7 @@ This repo contains scripts to setup a developer machine in a vagrant VM or local
     vagrant up
     ```
 
-2. Build the VM
+2. Build the VM or a local machine with an ubuntu installation
 
     The password for connecting to Vagrant VM's is "vagrant" by default.
     The VM's need your github credentials to be able to pull certain repos.
@@ -36,24 +36,30 @@ This repo contains scripts to setup a developer machine in a vagrant VM or local
     Available VM's are
     - workstation.dev
 
-    Setup the paths for the required ssh keys like so.
-    This is valid only if you use the keys specified in those locations for your github account
-    ```shell
-    [ -d ~/.ssh/github ] || mkdir ~/.ssh/github/
-    [ -f ~/.ssh/github/id_rsa ] || cp ~/.ssh/id_rsa ~/.ssh/github/id_rsa
-    [ -f ~/.ssh/github/id_rsa.pub ] || cp ~/.ssh/id_rsa ~/.ssh/github/id_rsa.pub
-    ```
+    It could also be a developer notebook with an ubuntu installation in which case host would be localhost.
 
     Run the bootstrap target on the Makefile to setup the VM's like so.
     The bootstrap sets up the a user called developer and copies your github ssh credentials from the host to the VM.
     Also the developer user in the VM has sudo access and it's ssh authentication is key based.
+
     This developer user has no password login.
     ```shell
-    make bootstrap HOST_IP=<172.20.20.10> # The host ip could be localhost or the vm ip
+    make bootstrap DRY_RUN=off HOST_IP=<172.20.20.10> DEBUG=on GIT_USER="<git user name with no spaces>" GIT_EMAIL="<git user email>" # The host ip could be localhost or the vm ip
+    ```
+
+    For provisioning a Ubuntu desktop that has a user which needs a password for sudo'ing
+    ```shell
+    make bootstrap HOST_IP=localhost DRY_RUN=off SUDO_PASSWD=<sudo password> DEBUG=on GIT_USER="<git user name with no spaces>" GIT_EMAIL="<git user email>"
     ```
 
     For provisioning the developer user in the VM or local machine
     ```shell
-    make build HOST_IP=<172.20.20.10> DRY_RUN=off # The host ip could be localhost or the vm ip
-    make build HOST_IP=<172.20.20.10> # This just does a dry run of your build target with ansible.
+    make build HOST_IP=<172.20.20.10> DRY_RUN=off DEBUG=on GIT_USER="<git user name with no spaces>" GIT_EMAIL="<git user email>" # The host ip could be localhost or the vm ip
+    make build HOST_IP=<172.20.20.10> DEBUG=on GIT_USER="<git user name with no spaces>" GIT_EMAIL="<git user email>" # This just does a dry run of your build target with ansible.
     ```
+
+    Post setup for the solarized color theme setup on ubuntu gnome term follow
+    [gnome-terminal-colors-solarized]: https://github.com/Anthony25/gnome-terminal-colors-solarized
+    This installs the solarized color pallete in gnome terminal. You still need to navigate to
+    Terminal > Preferences > Profiles > Unnamed/<Your profile name> > Edit > colors > Built in color schemes
+    and choose Solarized as the color theme.
