@@ -17,7 +17,8 @@
     credstash -r us-west-2 -t kms-cred-stash get -n {{ item.name }} type={{ item.context }} > /home/developer/.ssh/github/{{ item.name }} &&
     {% endif %}
     chown -R developer:developer /home/developer/.ssh/github/* &&
-    chmod 0600 /home/developer/.ssh/github/*
+    chmod 0600 /home/developer/.ssh/github/id_rsa &&
+    chmod 0644 /home/developer/.ssh/github/id_rsa.pub
   with_items:
     - name: 'id_rsa'
       context: 'private'
