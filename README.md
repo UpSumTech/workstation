@@ -1,6 +1,28 @@
 # workstation
 
-This repo contains scripts to setup a developer machine in a vagrant VM or locally on a ubuntu 14.04 box
+This repo contains scripts to setup a developer machine in a vagrant VM or locally on a ubuntu 16.04 box
+This is an opinionated playbook for setting a fully functional development environment. It leverages some of my other projects too which i use on a daily basis.
+This is what it does :
+
+This sets up a new user account called developer on a Ubuntu machine.
+
+1. It sets up bash with a proper bashrc and also bash-it
+2. It sets up tmux and also sets up the tmux configuration tool from https://github.com/sumanmukherjee03/tmux_setup
+3. It locally sets up vim in your user account instead of the system vim and also sets up the vim configuration from https://github.com/sumanmukherjee03/vim_setup
+4. It sets up docker and docker-machine
+5. It sets up kubectl
+6. It sets up mysql with a root user. The password for this is pulled from aws kms.
+7. It sets up postgres with a root user. The password for this is pulled from aws kms.
+8. It sets up git with a proper git config from https://github.com/sumanmukherjee03/git-setup
+9. It sets up ssh with proper keys for github. These keys need to be saved in aws kms (This needs to be configured a bit to allow different names and zones)
+10. It also sets up a whole bunch of envs for development
+  - ruby with rbenv
+  - python with pyenv
+  - golang with goenv
+  - java with jenv
+  - node with nvm
+  - and also autoenv for project specific shell exports
+11. It also sets up a whole bunch of tools for development. If you are curious have a look at ansible/roles/utils
 
 ## Getting started
 
@@ -16,9 +38,9 @@ This repo contains scripts to setup a developer machine in a vagrant VM or local
     pip install ansible
     ```
 
-### Setting up the VM
+### Setting up the VM or Local machine
 
-1. Setup the VMs
+1. Setup the VMs if you dont already have one
 
     Make sure you have deleted an existing ./.vagrant directory in the project's directory
     Also remove the entry for the VM host from your ~/.ssh/known_hosts file
@@ -58,8 +80,22 @@ This repo contains scripts to setup a developer machine in a vagrant VM or local
     make build HOST_IP=<172.20.20.10> DEBUG=on GIT_USER="<git user name with no spaces>" GIT_EMAIL="<git user email>" # This just does a dry run of your build target with ansible.
     ```
 
+### Post setup steps if on a local Ubuntu box
+
+1.  Manual interactive steps on the GUI to setup the solarized theme
+
     Post setup for the solarized color theme setup on ubuntu gnome term follow
     [gnome-terminal-colors-solarized]: https://github.com/Anthony25/gnome-terminal-colors-solarized
     This installs the solarized color pallete in gnome terminal. You still need to navigate to
     Terminal > Preferences > Profiles > Unnamed/<Your profile name> > Edit > colors > Built in color schemes
     and choose Solarized as the color theme.
+
+2.  Manual interactive steps on the CLI to setup pass on Linux
+
+    ```shell
+    gpg --gen-key # This generates the key for the encryption
+    gpg init sumanmukherjee03@gmail.com # This initiates the password store
+    pass ls # To list the passwords
+    ```
+
+    You can always use the help menu for more info on pass
