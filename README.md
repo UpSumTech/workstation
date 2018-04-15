@@ -75,9 +75,10 @@ This sets up a new user account called developer on a Ubuntu machine.
     ```
 
     For provisioning the developer user in the VM or local machine
+    By default the username to be provisioned is developer unless you over ride it
     ```shell
-    make build HOST_IP=<172.20.20.10> DRY_RUN=off DEBUG=on GIT_USER="<git user name with no spaces>" GIT_EMAIL="<git user email>" # The host ip could be localhost or the vm ip
-    make build HOST_IP=<172.20.20.10> DEBUG=on GIT_USER="<git user name with no spaces>" GIT_EMAIL="<git user email>" # This just does a dry run of your build target with ansible.
+    make build HOST_IP=<172.20.20.10> DRY_RUN=off DEBUG=on USER="<username>" GIT_USER="<git user name with no spaces>" GIT_EMAIL="<git user email>" # The host ip could be localhost or the vm ip
+    make build HOST_IP=<172.20.20.10> DEBUG=on USER="<username>" GIT_USER="<git user name with no spaces>" GIT_EMAIL="<git user email>" # This just does a dry run of your build target with ansible.
     ```
 
 ### Post setup steps if on a local Ubuntu box
@@ -94,7 +95,7 @@ This sets up a new user account called developer on a Ubuntu machine.
 
     ```shell
     gpg --gen-key # This generates the key for the encryption
-    gpg init sumanmukherjee03@gmail.com # This initiates the password store
+    gpg init <your email> # This initiates the password store
     pass ls # To list the passwords
     ```
 

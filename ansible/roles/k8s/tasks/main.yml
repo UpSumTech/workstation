@@ -2,8 +2,8 @@
 # These tasks install kubectl and other k8s specific dependencies
 
 - shell: >
-    . "/home/developer/.bashrc" &&
-    cd /home/developer/bin &&
+    . "/home/{{ user }}/.bashrc" &&
+    cd "/home/{{ user }}/bin" &&
     curl -sSLO https://storage.googleapis.com/kubernetes-release/release/$(curl -sSL https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl &&
     chmod +x ./kubectl
   args:

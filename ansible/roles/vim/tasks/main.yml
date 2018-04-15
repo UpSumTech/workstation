@@ -38,7 +38,7 @@
 
 - name: Configure and install vim
   shell: >
-    . "/home/developer/.bashrc" &&
+    . "/home/{{ user }}/.bashrc" &&
     { vim_src_tmpdir="$(mktemp -d $TMPDIR/vim.XXXX)"; } &&
     cd "$vim_src_tmpdir" &&
     git clone https://github.com/vim/vim &&
@@ -60,7 +60,7 @@
       --enable-gui=auto \
       --enable-fail-if-missing \
       --with-lua-prefix=/usr/include/lua5.1 \
-      --prefix=/home/developer \
+      --prefix="/home/{{ user }}" \
       --enable-clipboard \
       --enable-cscope &&
     make &&
@@ -73,9 +73,9 @@
 
 - name: Install vim config
   shell: >
-    . "/home/developer/.bashrc" &&
+    . "/home/{{ user }}/.bashrc" &&
     curl -s -S -L https://raw.githubusercontent.com/sumanmukherjee03/vim_setup/master/bootstrap.sh | bash &&
-    cd /home/developer/.vim &&
+    cd "/home/{{ user }}/.vim" &&
     make
   args:
     executable: /bin/bash

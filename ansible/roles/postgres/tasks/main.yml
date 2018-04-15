@@ -4,7 +4,7 @@
 
 - name: Starts the postgres service if not running
   shell: >
-    . /home/developer/.bashrc &&
+    . "/home/{{ user }}/.bashrc" &&
     command -v psql &&
     { systemctl status postgresql | grep -i 'active: active' || systemctl start postgresql; }
   args:
@@ -13,7 +13,7 @@
 
 - name: Setup the admin account
   shell: >
-    . "/home/developer/.bashrc" &&
+    . "/home/{{ user }}/.bashrc" &&
     command -v psql &&
     {%if aws_access_key_id is defined and aws_secret_access_key is defined %}
     psql_passwd="$(AWS_ACCESS_KEY_ID={{ aws_access_key_id }} AWS_SECRET_ACCESS_KEY={{ aws_secret_access_key }} credstash -r us-west-2 -t kms-cred-stash get -n psql_local_admin_passwd env=development)" &&

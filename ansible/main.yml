@@ -3,17 +3,17 @@
 
 - hosts: all
   become: true
-  become_user: developer
+  become_user: "{{ user }}"
   become_method: sudo
   gather_facts: true
   environment:
-    HOME: '/home/developer'
+    HOME: "/home/{{ user }}"
   roles:
     - common
 
 - hosts: workstation
   become: true
-  become_user: developer
+  become_user: "{{ user }}"
   become_method: sudo
   gather_facts: true
   roles:

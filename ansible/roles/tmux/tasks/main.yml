@@ -1,11 +1,11 @@
 ---
 # These tasks set up tmux for development machine
 
-- shell: . "/home/developer/.bashrc" && curl -s -S -L https://raw.githubusercontent.com/sumanmukherjee03/tmux_setup/master/bootstrap.sh | bash -i
+- shell: . "/home/{{ user }}/.bashrc" && curl -s -S -L https://raw.githubusercontent.com/sumanmukherjee03/tmux_setup/master/bootstrap.sh | bash -i
   args:
     executable: /bin/bash
 
-- file: path=/home/developer/.projects.json
-        owner=developer
-        group=developer
+- file: path="/home/{{ user }}/.projects.json"
+        owner={{ user }}
+        group={{ user }}
         state=touch

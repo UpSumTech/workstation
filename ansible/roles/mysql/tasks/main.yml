@@ -4,7 +4,7 @@
 
 - name: Starts the mysql service if not running
   shell: >
-    . /home/developer/.bashrc &&
+    . "/home/{{ user }}/.bashrc" &&
     command -v mysql &&
     { systemctl status mysql | grep -i 'active' || systemctl start mysql; }
   args:
@@ -13,7 +13,7 @@
 
 - name: Setup the admin account
   shell: >
-    . "/home/developer/.bashrc" &&
+    . "/home/{{ user }}/.bashrc" &&
     command -v mysql &&
     command -v mysqladmin &&
     {%if aws_access_key_id is defined and aws_secret_access_key is defined %}

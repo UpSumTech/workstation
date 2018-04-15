@@ -2,55 +2,55 @@
 # These tasks set up some common binaries needed to work with
 
 - name: Get rid of dot local cause it messes python2.7 up in ubuntu
-  shell: test -d /home/developer/.local && rm -rf /home/developer/.local
+  shell: test -d "/home/{{ user }}/.local" && rm -rf "/home/{{ user }}/.local"
   args:
     executable: /bin/bash
   ignore_errors: yes
 
 - file: state=directory
-    dest=/home/developer/bin
-    owner=developer
-    group=developer
+    dest="/home/{{ user }}/bin"
+    owner={{ user }}
+    group={{ user }}
 
 - file: state=directory
-    dest=/home/developer/tmp
-    owner=developer
-    group=developer
+    dest="/home/{{ user }}/tmp"
+    owner={{ user }}
+    group={{ user }}
 
 - file: state=directory
-    dest=/home/developer/share
-    owner=developer
-    group=developer
+    dest="/home/{{ user }}/share"
+    owner={{ user }}
+    group={{ user }}
 
 - name: Add bashrc
   copy: src=bashrc
-    dest=/home/developer/.bashrc
-    owner=developer
-    group=developer
+    dest="/home/{{ user }}/.bashrc"
+    owner={{ user }}
+    group={{ user }}
     mode=644
   register: custom_bashrc_added
 
 - name: Add utilities to your shell
   copy: src=bash_utils.sh
-    dest=/home/developer/.bash_utils.sh
-    owner=developer
-    group=developer
+    dest="/home/{{ user }}/.bash_utils.sh"
+    owner={{ user }}
+    group={{ user }}
     mode=775
   register: custom_bash_utils_added
 
 - name: Update bashrc to source the custom bash util fns
-  shell: echo '[[ -f $HOME/.bash_utils.sh ]] && . $HOME/.bash_utils.sh' >> /home/developer/.bashrc
+  shell: echo '[[ -f $HOME/.bash_utils.sh ]] && . $HOME/.bash_utils.sh' >> "/home/{{ user }}/.bashrc"
   when: custom_bashrc_added|success and custom_bash_utils_added | success
 
 - name: Add env_vars file to your home dir
   copy: src=env_vars.sh
-    dest=/home/developer/.env_vars.sh
-    owner=developer
-    group=developer
+    dest="/home/{{ user }}/.env_vars.sh"
+    owner={{ user }}
+    group={{ user }}
   register: custom_env_vars_added
 
 - name: Add extra line to profile file
-  shell: echo '[[ -f $HOME/.env_vars.sh ]] && . $HOME/.env_vars.sh' >> /home/developer/.bashrc
+  shell: echo '[[ -f $HOME/.env_vars.sh ]] && . $HOME/.env_vars.sh' >> "/home/{{ user }}/.bashrc"
   when: custom_bashrc_added|success and custom_env_vars_added|success
 
 - name: Install apt packages
@@ -122,47 +122,47 @@
 
 - name: Install version managers for langs
   shell: >
-    { [[ ! -d "/home/developer/.pyenv" ]] && (git clone https://github.com/pyenv/pyenv.git /home/developer/.pyenv && git clone https://github.com/pyenv/pyenv-virtualenv.git /home/developer/.pyenv/plugins/pyenv-virtualenv && git clone https://github.com/pyenv/pyenv-virtualenvwrapper.git /home/developer/.pyenv/plugins/pyenv-virtualenvwrapper); } &&
-    { [[ ! -d "/home/developer/.rbenv" ]] && (git clone https://github.com/rbenv/rbenv.git /home/developer/.rbenv && git clone https://github.com/rbenv/ruby-build.git /home/developer/.rbenv/plugins/ruby-build); } &&
-    { [[ ! -d "/home/developer/.nvm" ]] && (git clone https://github.com/creationix/nvm.git /home/developer/.nvm); } &&
-    { [[ ! -d "/home/developer/.jenv" ]] && (git clone https://github.com/gcuisinier/jenv.git /home/developer/.jenv); } &&
-    { [[ ! -d "/home/developer/.goenv" ]] && (git clone https://github.com/syndbg/goenv.git /home/developer/.goenv); } &&
-    { [[ ! -d "/home/developer/.autoenv" ]] && (git clone https://github.com/kennethreitz/autoenv.git /home/developer/.autoenv); } ||
+    { [[ ! -d "/home/{{ user }}/.pyenv" ]] && (git clone https://github.com/pyenv/pyenv.git "/home/{{ user }}/.pyenv" && git clone https://github.com/pyenv/pyenv-virtualenv.git "/home/{{ user }}/.pyenv/plugins/pyenv-virtualenv" && git clone https://github.com/pyenv/pyenv-virtualenvwrapper.git "/home/{{ user }}/.pyenv/plugins/pyenv-virtualenvwrapper"); } &&
+    { [[ ! -d "/home/{{ user }}/.rbenv" ]] && (git clone https://github.com/rbenv/rbenv.git "/home/{{ user }}/.rbenv" && git clone https://github.com/rbenv/ruby-build.git "/home/{{ user }}/.rbenv/plugins/ruby-build"); } &&
+    { [[ ! -d "/home/{{ user }}/.nvm" ]] && (git clone https://github.com/creationix/nvm.git "/home/{{ user }}/.nvm"); } &&
+    { [[ ! -d "/home/{{ user }}/.jenv" ]] && (git clone https://github.com/gcuisinier/jenv.git "/home/{{ user }}/.jenv"); } &&
+    { [[ ! -d "/home/{{ user }}/.goenv" ]] && (git clone https://github.com/syndbg/goenv.git "/home/{{ user }}/.goenv"); } &&
+    { [[ ! -d "/home/{{ user }}/.autoenv" ]] && (git clone https://github.com/kennethreitz/autoenv.git "/home/{{ user }}/.autoenv"); } ||
     echo 'language version managers already exist'
 
 - name: Install tools using pip
-  shell: . "/home/developer/.bashrc" && pip install "{{ item }}"
+  shell: . "/home/{{ user }}/.bashrc" && pip install "{{ item }}"
   with_items:
     - credstash
   args:
     executable: /bin/bash
 
 - name: Install python2 version
-  shell: . "/home/developer/.bashrc" && { pyenv versions | grep '2.7.14' || pyenv install 2.7.14; }
+  shell: . "/home/{{ user }}/.bashrc" && { pyenv versions | grep '2.7.14' || pyenv install 2.7.14; }
   args:
     executable: /bin/bash
 
 - name: Install python3 version
-  shell: . "/home/developer/.bashrc" && { pyenv versions | grep '3.4.4' || pyenv install 3.4.4; }
+  shell: . "/home/{{ user }}/.bashrc" && { pyenv versions | grep '3.4.4' || pyenv install 3.4.4; }
   args:
     executable: /bin/bash
 
 - name: Set global python version
-  shell: . "/home/developer/.bashrc" && pyenv global 2.7.14 3.4.4
+  shell: . "/home/{{ user }}/.bashrc" && pyenv global 2.7.14 3.4.4
   args:
     executable: /bin/bash
 
 - name: Install ruby version
-  shell: . "/home/developer/.bashrc" && { rbenv versions | grep '2.4.0' || rbenv install 2.4.0; } && rbenv global 2.4.0
+  shell: . "/home/{{ user }}/.bashrc" && { rbenv versions | grep '2.4.0' || rbenv install 2.4.0; } && rbenv global 2.4.0
   args:
     executable: /bin/bash
 
 - name: Install node version
-  shell: . "/home/developer/.bashrc" && { nvm ls | grep 'v8.9.3' || nvm install 8.9.3; } && nvm alias default 8.9.3
+  shell: . "/home/{{ user }}/.bashrc" && { nvm ls | grep 'v8.9.3' || nvm install 8.9.3; } && nvm alias default 8.9.3
   args:
     executable: /bin/bash
 
 - name: Install golang version
-  shell: . "/home/developer/.bashrc" && { goenv versions | grep '1.9.2' || goenv install 1.9.2; } && goenv global 1.9.2
+  shell: . "/home/{{ user }}/.bashrc" && { goenv versions | grep '1.9.2' || goenv install 1.9.2; } && goenv global 1.9.2
   args:
     executable: /bin/bash

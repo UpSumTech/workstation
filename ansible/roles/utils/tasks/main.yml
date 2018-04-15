@@ -2,7 +2,7 @@
 # These tasks set up various cli tools and utils
 
 - name: Install tools using pip
-  shell: . "/home/developer/.bashrc" && pip install "{{ item }}"
+  shell: . "/home/{{ user }}/.bashrc" && pip install "{{ item }}"
   with_items:
     - maybe
     - percol
@@ -17,13 +17,13 @@
 
 - name: Add inputrc
   copy: src=inputrc
-    dest=/home/developer/.inputrc
-    owner=developer
-    group=developer
+    dest="/home/{{ user }}/.inputrc"
+    owner={{ user }}
+    group={{ user }}
     mode=662
 
 - name: Install tools using gem
-  shell: . "/home/developer/.bashrc" && gem install "{{ item }}"
+  shell: . "/home/{{ user }}/.bashrc" && gem install "{{ item }}"
   with_items:
     - bundler
     - rake
@@ -35,15 +35,15 @@
 
 - name: Install wiremock
   shell: >
-    . "/home/developer/.bashrc" &&
-    cd /home/developer/lib &&
+    . "/home/{{ user }}/.bashrc" &&
+    cd "/home/{{ user }}/lib" &&
     wget http://repo1.maven.org/maven2/com/github/tomakehurst/wiremock/2.9.0/wiremock-2.9.0.jar &&
     mv wiremock-2.9.0.jar wiremock.jar
   args:
     executable: /bin/bash
 
 - name: Install npm utilities
-  shell: . "/home/developer/.bashrc" && npm install -g "{{ item }}"
+  shell: . "/home/{{ user }}/.bashrc" && npm install -g "{{ item }}"
   with_items:
     - how2
     - cpy-cli
@@ -67,14 +67,14 @@
 
 - name: Add an alias for rm
   shell: >
-    . "/home/developer/.bashrc" &&
-    echo 'alias rm=trash' >> /home/developer/.bash_it/custom/aliases.bash
+    . "/home/{{ user }}/.bashrc" &&
+    echo 'alias rm=trash' >> "/home/{{ user }}/.bash_it/custom/aliases.bash"
   args:
     executable: /bin/bash
 
-- copy: src=agignore dest=/home/developer/.agignore owner=developer group=developer mode=600
+- copy: src=agignore dest="/home/{{ user }}/.agignore" owner={{ user }} group={{ user }} mode=600
 
-- copy: src=tigrc dest=/home/developer/.tigrc owner=developer group=developer mode=600
+- copy: src=tigrc dest="/home/{{ user }}/.tigrc" owner={{ user }} group={{ user }} mode=600
 
 - name: Add universal ctags
   shell: >
@@ -93,7 +93,7 @@
   become: true
   become_user: root
 
-- copy: src=ctags dest=/home/developer/.ctags owner=developer group=developer mode=600
+- copy: src=ctags dest="/home/{{ user }}/.ctags" owner={{ user }} group={{ user }} mode=600
 
 - name: Add package info to sources for sysdig
   shell: >
@@ -119,21 +119,21 @@
   become_user: root
 
 - name: Install concurrent multi server mysql client
-  shell: . "/home/developer/.bashrc" && /bin/bash -ic "cd /home/developer/bin && curl -s -S -L -0 https://github.com/github/ccql/releases/download/v1.1.4/ccql-binary-linux-20160316084430.tar.gz | tar xz"
+  shell: . "/home/{{ user }/.bashrc" && /bin/bash -ic "cd /home/{{ user }}/bin && curl -s -S -L -0 https://github.com/github/ccql/releases/download/v1.1.4/ccql-binary-linux-20160316084430.tar.gz | tar xz"
   args:
     executable: /bin/bash
 
 - name: Enable completions for bashit
-  shell: . "/home/developer/.bashrc" && /bin/bash -ic "bash-it enable {{ ' '.join(bash_it.completions) }}"
+  shell: . "/home/{{ user }}/.bashrc" && /bin/bash -ic "bash-it enable {{ ' '.join(bash_it.completions) }}"
   args:
     executable: /bin/bash
 
 - name: Enable plugins for bashit
-  shell: . "/home/developer/.bashrc" && /bin/bash -ic "bash-it enable plugin {{ ' '.join(bash_it.plugins) }}"
+  shell: . "/home/{{ user }}/.bashrc" && /bin/bash -ic "bash-it enable plugin {{ ' '.join(bash_it.plugins) }}"
   args:
     executable: /bin/bash
 
 - name: Enable aliases for bashit
-  shell: . "/home/developer/.bashrc" && /bin/bash -ic "bash-it enable alias {{ ' '.join(bash_it.aliases) }}"
+  shell: . "/home/{{ user }}/.bashrc" && /bin/bash -ic "bash-it enable alias {{ ' '.join(bash_it.aliases) }}"
   args:
     executable: /bin/bash

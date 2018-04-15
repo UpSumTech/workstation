@@ -1,24 +1,24 @@
 ---
 # This task sets up the ssh keys on the machine
 
-- file: path=/home/developer/.ssh/github
-        owner=developer
-        group=developer
+- file: path="/home/{{ user }}/.ssh/github"
+        owner={{ user }}
+        group={{ user }}
         state=directory
 
-- name: Pushes deploy users github private key to the remote developer users ssh keys
+- name: Pushes deploy users github private key to the remote users ssh keys
   shell: >
-    . "/home/developer/.bashrc" &&
+    . "/home/{{ user }}/.bashrc" &&
     {%if aws_access_key_id is defined and aws_secret_access_key is defined %}
     AWS_ACCESS_KEY_ID={{ aws_access_key_id }} \
     AWS_SECRET_ACCESS_KEY={{ aws_secret_access_key }} \
-    credstash -r us-west-2 -t kms-cred-stash get -n {{ item.name }} type={{ item.context }} > /home/developer/.ssh/github/{{ item.name }} &&
+    credstash -r us-west-2 -t kms-cred-stash get -n {{ item.name }} type={{ item.context }} > "/home/{{ user }}/.ssh/github/{{ item.name }}" &&
     {% else %}
-    credstash -r us-west-2 -t kms-cred-stash get -n {{ item.name }} type={{ item.context }} > /home/developer/.ssh/github/{{ item.name }} &&
+    credstash -r us-west-2 -t kms-cred-stash get -n {{ item.name }} type={{ item.context }} > "/home/{{ user }}/.ssh/github/{{ item.name }}" &&
     {% endif %}
-    chown -R developer:developer /home/developer/.ssh/github/* &&
-    chmod 0600 /home/developer/.ssh/github/id_rsa &&
-    chmod 0644 /home/developer/.ssh/github/id_rsa.pub
+    chown -R "{{ user }}:{{ user }}" "/home/{{ user }}/.ssh/github/*" &&
+    chmod 0600 "/home/{{ user }}/.ssh/github/id_rsa" &&
+    chmod 0644 "/home/{{ user }}/.ssh/github/id_rsa.pub"
   with_items:
     - name: 'id_rsa'
       context: 'private'
@@ -27,15 +27,15 @@
   args:
     executable: /bin/bash
 
-- name: Add github as a known host to the ssh config of developer user
+- name: Add github as a known host to the ssh config of the user
   shell: >
-    . "/home/developer/.bashrc" &&
-    ssh-keyscan -H github.com >> /home/developer/.ssh/known_hosts && chmod 600 /home/developer/.ssh/known_hosts
+    . "/home/{{ user }}/.bashrc" &&
+    ssh-keyscan -H github.com >> "/home/{{ user }}/.ssh/known_hosts" && chmod 600 "/home/{{ user }}/.ssh/known_hosts"
   args:
     executable: /bin/bash
 
 - copy: src=config
-        dest=/home/developer/.ssh/config
-        owner=developer
-        group=developer
+        dest="/home/{{ user }}/.ssh/config"
+        owner={{ user }}
+        group={{ user }}
         mode=600

@@ -112,7 +112,7 @@ class Options(object):
 
 ######### Internal function ###########
 
-def _run_playbook(provision_type, host, playbook_file, extra_vars={}, dry_run=True):
+def _run_playbook(provision_type, user, host, playbook_file, extra_vars={}, dry_run=True):
     """Runs the ansible playbook
     Instead of running ansible as a executable, run ansible through it's API
     """
@@ -126,7 +126,7 @@ def _run_playbook(provision_type, host, playbook_file, extra_vars={}, dry_run=Tr
     #  import pdb; pdb.set_trace()
     if provision_type == 'developer':
         playbook = os.path.join(os.getcwd(), playbook_file)
-        options.become_user = 'developer'
+        options.become_user = user
     else:
         raise BadArgument('The playbook type provided is not valid')
 
@@ -160,12 +160,13 @@ def _run_playbook(provision_type, host, playbook_file, extra_vars={}, dry_run=Tr
 
 __doc__="""Configures a workstation on a virtual machine or localhost
 Usage:
-    provision.py developer --host=<host> --playbook=<playbook> [--ignore-dry-run]
+    provision.py developer --user=<user> --host=<host> --playbook=<playbook> [--ignore-dry-run]
     provision.py (-h | --help)
 
 Options:
     -h --help                                        You are looking at this option right now.
-    --playbook=<playbook>                                    The ip address of the host or 'localhost' to run the playbook on. If not specified this will be the localhost.
+    --playbook=<playbook>                            The playbook type you are trying to run.
+    --user=<user>                                    The user you want to provision with this playbook.
     --host=<host>                                    The ip address of the host or 'localhost' to run the playbook on. If not specified this will be the localhost.
     --ignore-dry-run                                 This option will ignore the dry run and execute the playbooks
 """
@@ -185,6 +186,7 @@ def main(args=None):
         ansible_python_interpreter="/usr/bin/env python",
         git_user=os.environ.get('GIT_USER'),
         git_email=os.environ.get('GIT_EMAIL')
+        user=args['--user']
         )
     if os.environ.get('SUDO_PASSWD'):
         extra_vars["ansible_sudo_pass"] = os.environ.get('SUDO_PASSWD')
@@ -214,7 +216,7 @@ def main(args=None):
         die('Not ready to handle this type of OS right now')
 
     if args['developer']:
-        _run_playbook('developer', args['--host'], args['--playbook'], extra_vars=extra_vars, dry_run=dry_run)
+        _run_playbook('developer', args['--user'], args['--host'], args['--playbook'], extra_vars=extra_vars, dry_run=dry_run)
     else:
         raise BadArgument('You need to provide a valid provision type. It can only be of type developer.')
 
