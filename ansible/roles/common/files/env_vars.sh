@@ -10,7 +10,7 @@ command -v pyenv 1>/dev/null 2>&1 && eval "$(pyenv init -)" && eval "$(pyenv vir
 command -v goenv 1>/dev/null 2>&1 && eval "$(goenv init -)"
 [[ -d "$HOME/.nvm" ]] && export NVM_DIR="$HOME/.nvm"
 [[ -f "$NVM_DIR/nvm.sh" ]] && . "$NVM_DIR/nvm.sh"
-[[ -d "$HOME/.autoenv" ]] && . $HOME/.autoenv/activate.sh
+[[ -d "$HOME/.autoenv" ]] && . $HOME/.autoenv/activate.sh || . "$(which activate.sh)"
 [[ -d "$HOME/.jenv" ]] && export PATH="$HOME/.jenv/bin:$PATH"
 command -v jenv 1>/dev/null 2>&1 && eval "$(jenv init -)"
 [[ -x "$HOME/bin/vim" ]] && export EDITOR="$HOME/bin/vim"

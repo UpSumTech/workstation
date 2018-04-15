@@ -51,7 +51,6 @@
 
 - name: Add extra line to profile file
   shell: echo '[[ -f $HOME/.env_vars.sh ]] && . $HOME/.env_vars.sh' >> /home/developer/.bashrc
-    mode=775
   when: custom_bashrc_added|success and custom_env_vars_added|success
 
 - name: Install apt packages
