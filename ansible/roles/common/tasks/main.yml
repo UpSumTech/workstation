@@ -126,14 +126,14 @@
     { [[ ! -d "/home/developer/.rbenv" ]] && (git clone https://github.com/rbenv/rbenv.git /home/developer/.rbenv && git clone https://github.com/rbenv/ruby-build.git /home/developer/.rbenv/plugins/ruby-build); } &&
     { [[ ! -d "/home/developer/.nvm" ]] && (git clone https://github.com/creationix/nvm.git /home/developer/.nvm); } &&
     { [[ ! -d "/home/developer/.jenv" ]] && (git clone https://github.com/gcuisinier/jenv.git /home/developer/.jenv); } &&
-    { [[ ! -d "/home/developer/.goenv" ]] && (git clone https://github.com/syndbg/goenv.git /home/developer/.goenv); } ||
+    { [[ ! -d "/home/developer/.goenv" ]] && (git clone https://github.com/syndbg/goenv.git /home/developer/.goenv); } &&
+    { [[ ! -d "/home/developer/.autoenv" ]] && (git clone https://github.com/kennethreitz/autoenv.git /home/developer/.autoenv); } ||
     echo 'language version managers already exist'
 
 - name: Install tools using pip
   shell: . "/home/developer/.bashrc" && pip install "{{ item }}"
   with_items:
     - credstash
-    - autoenv
   args:
     executable: /bin/bash
 
