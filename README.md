@@ -100,3 +100,6 @@ This sets up a new user account called developer on a Ubuntu machine.
     ```
 
     You can always use the help menu for more info on pass
+
+3.  Get all the binaries for vim-go
+    Open vim and :GoInstallBinaries to get all the bins required for vim-go to work
