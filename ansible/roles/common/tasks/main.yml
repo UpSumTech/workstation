@@ -64,6 +64,7 @@
     - git
     - wget
     - git-extras
+    - gitk # Cant really use it if there is no GUI
     - unzip
     - libffi-dev
     - libpq-dev
