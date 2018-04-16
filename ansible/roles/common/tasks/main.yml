@@ -167,3 +167,8 @@
   shell: . "/home/{{ user }}/.bashrc" && { goenv versions | grep '1.9.2' || goenv install 1.9.2; } && goenv global 1.9.2
   args:
     executable: /bin/bash
+
+- name: Install dep the package manager for golang
+  shell: . "/home/{{ user }}/.bashrc" && { curl https://raw.githubusercontent.com/golang/dep/master/install.sh | bash; }
+  args:
+    executable: /bin/bash
