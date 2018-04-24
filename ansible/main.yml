@@ -24,7 +24,9 @@
     - tmux
     - utils
     - docker
+    - virtualbox
     - docker-machine
     - minikube
+    - minishift
     - mysql
     - postgres

@@ -1,18 +1,5 @@
 ---
-# These tasks install virtualbox and minikube
-
-- name: install-virtualbox-for-minikube
-  apt:
-    name: "{{ item }}"
-    state: present
-    update_cache: yes
-    install_recommends: no
-  with_items:
-    - virtualbox
-    - virtualbox-ext-pack
-  become: true
-  become_user: root
-  register: is_virtualbox_installed
+# These tasks install minishift
 
 - name: install-minikube
   shell: >
@@ -22,12 +9,20 @@
     url="https://storage.googleapis.com/minikube/releases/v0.26.1/minikube-linux-amd64" &&
     curl -LO "$url" &&
     chmod +x minikube &&
-    mv minikube "/home/{{ user }}/minikube" &&
+    mv minikube "/home/{{ user }}/bin/minikube" &&
     rm -rf "$minikube_tmpdir"
   args:
     executable: /bin/bash
-  when: is_virtualbox_installed|success
   register: is_minikube_installed
+
+- name: start-minikube
+  shell: >
+    . "/home/{{ user }}/.bashrc" &&
+    minikube start
+  args:
+    executable: /bin/bash
+  when: is_minikube_installed|success
+  register: is_minikube_started
 
 - name: install-kubectl
   shell: >
@@ -37,11 +32,11 @@
     cd "$kubectl_tmpdir" &&
     curl -LO "$url" &&
     chmod +x kubectl &&
-    mv kubectl "/home/{{ user }}/kubectl" &&
+    mv kubectl "/home/{{ user }}/bin/kubectl" &&
     rm -rf "$kubectl_tmpdir"
   args:
     executable: /bin/bash
-  when: is_minikube_installed|success
+  when: is_minikube_started|success
   register: is_kubectl_installed
 
 - name: get-sample-deployment-working
@@ -51,5 +46,4 @@
     kubectl run hello-minikube --image=k8s.gcr.io/echoserver:1.4 --port=8080
   args:
     executable: /bin/bash
-  when: is_minikube_installed|success
-  register: is_kubectl_installed
+  when: is_kubectl_installed|success

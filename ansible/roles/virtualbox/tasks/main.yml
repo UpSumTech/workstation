@@ -1,0 +1,14 @@
+---
+# These tasks install virtualbox
+
+- name: install-virtualbox-for-minikube
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+    install_recommends: no
+  with_items:
+    - virtualbox
+    - virtualbox-ext-pack
+  become: true
+  become_user: root

@@ -1,0 +1,26 @@
+---
+# These tasks install minishift
+
+- name: install-minishift
+  shell: >
+    . "/home/{{ user }}/.bashrc" &&
+    { minishift_tmpdir="$(mktemp -d $TMPDIR/minishift.XXXX)"; } &&
+    cd "$minishift_tmpdir" &&
+    url="https://github.com/minishift/minishift/releases/download/v1.16.1/minishift-1.16.1-linux-amd64.tgz" &&
+    wget -O minishift.tgz "$url" &&
+    tar xzf minishift.tgz &&
+    cd minishift-1.16.1-linux-amd64 &&
+    chmod +x minishift &&
+    mv minishift "/home/{{ user }}/bin/minishift" &&
+    rm -rf "$minishift_tmpdir"
+  args:
+    executable: /bin/bash
+  register: is_minishift_installed
+
+- name: start-minishift
+  shell: >
+    . "/home/{{ user }}/.bashrc" &&
+    minishift start --vm-driver virtualbox
+  args:
+    executable: /bin/bash
+  when: is_minishift_installed|success
