@@ -1,0 +1,55 @@
+---
+# These tasks install virtualbox and minikube
+
+- name: install-virtualbox-for-minikube
+  apt:
+    name: "{{ item }}"
+    state: present
+    update_cache: yes
+    install_recommends: no
+  with_items:
+    - virtualbox
+    - virtualbox-ext-pack
+  become: true
+  become_user: root
+  register: is_virtualbox_installed
+
+- name: install-minikube
+  shell: >
+    . "/home/{{ user }}/.bashrc" &&
+    { minikube_tmpdir="$(mktemp -d $TMPDIR/minikube.XXXX)"; } &&
+    cd "$minikube_tmpdir" &&
+    url="https://storage.googleapis.com/minikube/releases/v0.26.1/minikube-linux-amd64" &&
+    curl -LO "$url" &&
+    chmod +x minikube &&
+    mv minikube "/home/{{ user }}/minikube" &&
+    rm -rf "$minikube_tmpdir"
+  args:
+    executable: /bin/bash
+  when: is_virtualbox_installed|success
+  register: is_minikube_installed
+
+- name: install-kubectl
+  shell: >
+    . "/home/{{ user }}/.bashrc" &&
+    { kubectl_tmpdir="$(mktemp -d $TMPDIR/kubectl.XXXX)"; } &&
+    url="https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl" &&
+    cd "$kubectl_tmpdir" &&
+    curl -LO "$url" &&
+    chmod +x kubectl &&
+    mv kubectl "/home/{{ user }}/kubectl" &&
+    rm -rf "$kubectl_tmpdir"
+  args:
+    executable: /bin/bash
+  when: is_minikube_installed|success
+  register: is_kubectl_installed
+
+- name: get-sample-deployment-working
+  shell: >
+    . "/home/{{ user }}/.bashrc" &&
+    kubectl cluster-info &&
+    kubectl run hello-minikube --image=k8s.gcr.io/echoserver:1.4 --port=8080
+  args:
+    executable: /bin/bash
+  when: is_minikube_installed|success
+  register: is_kubectl_installed

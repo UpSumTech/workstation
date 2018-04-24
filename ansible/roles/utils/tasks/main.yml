@@ -12,6 +12,7 @@
     - mycli
     - pgcli
     - cheat
+    - docker-compose
   args:
     executable: /bin/bash
 

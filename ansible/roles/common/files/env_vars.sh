@@ -15,3 +15,4 @@ command -v goenv 1>/dev/null 2>&1 && eval "$(goenv init -)"
 [[ -d "$HOME/.jenv" ]] && export PATH="$HOME/.jenv/bin:$PATH"
 command -v jenv 1>/dev/null 2>&1 && eval "$(jenv init -)"
 [[ -x "$HOME/bin/vim" ]] && export EDITOR="$HOME/bin/vim"
+command -v kubectl 1>/dev/null 2>&1 && . <(kubectl completion bash)

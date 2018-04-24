@@ -24,5 +24,7 @@
     - tmux
     - utils
     - docker
+    - docker-machine
+    - minikube
     - mysql
     - postgres

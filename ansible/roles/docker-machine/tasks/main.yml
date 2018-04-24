@@ -1,0 +1,21 @@
+---
+# These tasks install docker-machine
+# Only to be used if you want to check out some tooling on a remote/virtual docker host
+# This is otherwise pretty useless on a linux box
+
+- name: install-docker-machine
+  shell: >
+    . "/home/{{ user }}/.bashrc" &&
+    { docker_machine_tmpdir="$(mktemp -d $TMPDIR/docker_machine.XXXX)"; } &&
+    base=https://github.com/docker/machine/releases/download/v0.14.0 &&
+    cd "$docker_machine_tmpdir" &&
+    curl -L $base/docker-machine-$(uname -s)-$(uname -m) >docker-machine &&
+    chmod +x docker-machine &&
+    mv docker-machine "/home/{{ user }}/bin/docker-machine" &&
+    rm -rf "$docker_machine_tmpdir"
+  register: is_docker_machine_installed
+
+- name: install-docker-compose
+  shell: . "/home/{{ user }}/.bashrc" && pip install docker-compose
+  args:
+    executable: /bin/bash
