@@ -15,6 +15,7 @@ command -v goenv 1>/dev/null 2>&1 && eval "$(goenv init -)"
 [[ -d "$HOME/.jenv" ]] && export PATH="$HOME/.jenv/bin:$PATH"
 command -v jenv 1>/dev/null 2>&1 && eval "$(jenv init -)"
 [[ -x "$HOME/bin/vim" ]] && export EDITOR="$HOME/bin/vim"
+[[ -d "$HOME/.kube_certs" ]] && export KUBE_CERTS_DIR="$HOME/.kube_certs"
 command -v kubectl 1>/dev/null 2>&1 && . <(kubectl completion bash)
 [[ -d "$HOME/.secrets" ]] && for file in $(find "$HOME/.secrets" -type f -name '*.sh'); do . "$file"; done
 [[ -f "$HOME/.activate_profile.sh" ]] && . "$HOME/.activate_profile.sh"

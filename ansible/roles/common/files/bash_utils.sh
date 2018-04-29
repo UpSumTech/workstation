@@ -1,7 +1,18 @@
 #! /usr/bin/env bash
 
+############################## PRIVATE HELPER FNS #############################
+
 __ok() {
   echo -n ""
+}
+
+__err() {
+  echo "ERROR >> $1" >/dev/stderr
+  exit 1
+}
+
+__check_kubectl() {
+  command -v kubectl >/dev/null 2>&1 || __err "You dont have kubectl installed"
 }
 
 start_ssh_agent_and_add_key() {
@@ -175,4 +186,33 @@ load_docker_env() {
       ;;
   esac
   __ok
+}
+
+login_dockerhub() {
+  [[ ! -z "$DOCKERHUB_USERNAME" && ! -z "$DOCKERHUB_PASSWORD" ]] \
+    || __err "dockerhub creds have not been exported to the shell"
+  docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASSWORD"
+}
+
+kube_get_namespaces() {
+  __check_kubectl
+  kubectl get namespace -o template --template=$'{{range .items}}{{.metadata.name}}\n{{end}}'
+}
+
+kube_set_creds() {
+  local user="$1"
+  __check_kubectl
+  kubectl config set-credentials "$user" \
+    --certificate-authority="$KUBE_CERTS_DIR/ca.pem" \
+    --client-key="$KUBE_CERTS_DIR/key.pem" \
+    --client-certificate="$KUBE_CERTS_DIR/cert.pem"
+}
+
+kube_set_cluster() {
+  local cluster="$1"
+  local server="$2"
+  __check_kubectl
+  kubectl config set-cluster "$cluster" \
+    --server="$server" \
+    --certificate-authority="$KUBE_CERTS_DIR/ca.pem"
 }
