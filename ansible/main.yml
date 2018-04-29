@@ -1,5 +1,6 @@
 ---
-# This playbook deploys the workstation
+# This playbook provisions servers with some opinionated basic stuff
+# It adds some extras if it is a workstation
 
 - hosts: all
   become: true
@@ -10,13 +11,6 @@
     HOME: "/home/{{ user }}"
   roles:
     - common
-
-- hosts: workstation
-  become: true
-  become_user: "{{ user }}"
-  become_method: sudo
-  gather_facts: true
-  roles:
     - ssh
     - git
     - bash-it
@@ -24,9 +18,22 @@
     - tmux
     - utils
     - docker
-    - virtualbox
-    - docker-machine
-    - minikube
-    - minishift
     - mysql
     - postgres
+
+- hosts: workstation
+  become: true
+  become_user: "{{ user }}"
+  become_method: sudo
+  environment:
+    HOME: "/home/{{ user }}"
+  gather_facts: true
+  roles:
+    - role: virtualbox
+      when: playbook_type != 'CLOUD_VM'
+    - role: docker-machine
+      when: playbook_type != 'CLOUD_VM'
+    - role: minikube
+      when: playbook_type != 'CLOUD_VM'
+    - role: minishift
+      when: playbook_type != 'CLOUD_VM'

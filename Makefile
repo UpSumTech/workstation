@@ -61,7 +61,7 @@ else
 	PLAYBOOK_TYPE = CLOUD_VM
 	BASH_LOGIN_SOURCE = $$HOME/.bashrc
 	INSTALL_DEPS_FILE = bin/linux_deps.sh
-  $(error "Only supporting mac os hosts for VMs at this point. Cloud VM hosts will be added afterwards")
+  $(error "Only supporting mac os hosts for VMs or CLOUD_VMs at this point")
 endif
 endif
 
