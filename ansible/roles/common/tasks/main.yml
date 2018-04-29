@@ -42,12 +42,20 @@
   shell: echo '[[ -f $HOME/.bash_utils.sh ]] && . $HOME/.bash_utils.sh' >> "/home/{{ user }}/.bashrc"
   when: custom_bashrc_added|success and custom_bash_utils_added | success
 
+- name: Add activate_profile file to your home dir
+  copy: src=activate_profile.sh
+    dest="/home/{{ user }}/.activate_profile.sh"
+    owner={{ user }}
+    group={{ user }}
+  register: activate_profile_script_added
+
 - name: Add env_vars file to your home dir
   copy: src=env_vars.sh
     dest="/home/{{ user }}/.env_vars.sh"
     owner={{ user }}
     group={{ user }}
   register: custom_env_vars_added
+  when: activate_profile_script_added|success
 
 - name: Add extra line to profile file
   shell: echo '[[ -f $HOME/.env_vars.sh ]] && . $HOME/.env_vars.sh' >> "/home/{{ user }}/.bashrc"
