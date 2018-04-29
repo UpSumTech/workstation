@@ -192,6 +192,26 @@ login_dockerhub() {
   [[ ! -z "$DOCKERHUB_USERNAME" && ! -z "$DOCKERHUB_PASSWORD" ]] \
     || __err "dockerhub creds have not been exported to the shell"
   docker login -u "$DOCKERHUB_USERNAME" -p "$DOCKERHUB_PASSWORD"
+  __ok
+}
+
+rm_intermediate_docker_images() {
+  docker images | grep '<none>' | awk '{print $3}' | xargs -n 1 -I % docker rmi -f %
+  __ok
+}
+
+rm_stopped_docker_containers() {
+  docker ps --filter status=exited --filter status=dead --format="{{ .ID }} {{ .Names }}" \
+    | awk '{print $1}' \
+    | xargs -n 1 -I % docker rm %
+  __ok
+}
+
+stop_docker_containers() {
+  docker ps --filter status=running --filter status=restarting --filter status=removing --filter status=created --format="{{ .ID }} {{ .Names }}" \
+    | awk '{print $1}' \
+    | xargs -n 1 -I % docker stop %
+  __ok
 }
 
 kube_get_namespaces() {
@@ -206,6 +226,7 @@ kube_set_creds() {
     --certificate-authority="$KUBE_CERTS_DIR/ca.pem" \
     --client-key="$KUBE_CERTS_DIR/key.pem" \
     --client-certificate="$KUBE_CERTS_DIR/cert.pem"
+  __ok
 }
 
 kube_set_cluster() {
@@ -215,4 +236,5 @@ kube_set_cluster() {
   kubectl config set-cluster "$cluster" \
     --server="$server" \
     --certificate-authority="$KUBE_CERTS_DIR/ca.pem"
+  __ok
 }
