@@ -49,6 +49,7 @@ activate_profile_for_developer() {
   export DOCKERHUB_USERNAME="$DEVELOPER_DOCKERHUB_USERNAME"
   export DOCKERHUB_PASSWORD="$DEVELOPER_DOCKERHUB_PASSWORD"
   export GITHUB_USERNAME="$DEVELOPER_GITHUB_USERNAME"
+  export BINTRAY_API_KEY="$DEVELOPER_BINTRAY_API_KEY"
   activate_profile_helper "developer"
 }
 
@@ -68,6 +69,7 @@ activate_profile_for_admin() {
   export DOCKERHUB_USERNAME="$ADMIN_DOCKERHUB_USERNAME"
   export DOCKERHUB_PASSWORD="$ADMIN_DOCKERHUB_PASSWORD"
   export GITHUB_USERNAME="$ADMIN_GITHUB_USERNAME"
+  export BINTRAY_API_KEY="$ADMIN_BINTRAY_API_KEY"
   activate_profile_helper "admin"
 }
 
@@ -87,6 +89,7 @@ activate_profile_for_superuser() {
   export DOCKERHUB_USERNAME="$SUPERUSER_DOCKERHUB_USERNAME"
   export DOCKERHUB_PASSWORD="$SUPERUSER_DOCKERHUB_PASSWORD"
   export GITHUB_USERNAME="$SUPERUSER_GITHUB_USERNAME"
+  export BINTRAY_API_KEY="$SUPERUSER_BINTRAY_API_KEY"
   activate_profile_helper "superuser"
 }
 
@@ -109,6 +112,7 @@ deactivate_profile_helper() {
   unset DOCKERHUB_USERNAME
   unset DOCKERHUB_PASSWORD
   unset GITHUB_USERNAME
+  unset BINTRAY_API_KEY
 }
 
 activate_help() {
