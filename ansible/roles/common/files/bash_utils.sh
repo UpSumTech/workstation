@@ -238,3 +238,13 @@ kube_set_cluster() {
     --certificate-authority="$KUBE_CERTS_DIR/ca.pem"
   __ok
 }
+
+kube_get_master_pods() {
+  __check_kubectl
+  kubectl -n kube-system get pods
+}
+
+kube_get_clusters() {
+  __check_kubectl
+  kubectl config get-clusters
+}
