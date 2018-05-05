@@ -51,6 +51,7 @@ activate_profile_for_developer() {
   export GITHUB_USERNAME="$DEVELOPER_GITHUB_USERNAME"
   export BINTRAY_USERNAME="$DEVELOPER_BINTRAY_USERNAME"
   export BINTRAY_API_KEY="$DEVELOPER_BINTRAY_API_KEY"
+  export BINTRAY_REPO_NAME="$DEVELOPER_BINTRAY_REPO_NAME"
   activate_profile_helper "developer"
 }
 
@@ -72,6 +73,7 @@ activate_profile_for_admin() {
   export GITHUB_USERNAME="$ADMIN_GITHUB_USERNAME"
   export BINTRAY_USERNAME="$ADMIN_BINTRAY_USERNAME"
   export BINTRAY_API_KEY="$ADMIN_BINTRAY_API_KEY"
+  export BINTRAY_REPO_NAME="$ADMIN_BINTRAY_REPO_NAME"
   activate_profile_helper "admin"
 }
 
@@ -93,6 +95,7 @@ activate_profile_for_superuser() {
   export GITHUB_USERNAME="$SUPERUSER_GITHUB_USERNAME"
   export BINTRAY_USERNAME="$SUPERUSER_BINTRAY_USERNAME"
   export BINTRAY_API_KEY="$SUPERUSER_BINTRAY_API_KEY"
+  export BINTRAY_REPO_NAME="$SUPERUSER_BINTRAY_REPO_NAME"
   activate_profile_helper "superuser"
 }
 
@@ -117,6 +120,7 @@ deactivate_profile_helper() {
   unset GITHUB_USERNAME
   unset BINTRAY_USERNAME
   unset BINTRAY_API_KEY
+  unset BINTRAY_REPO_NAME
 }
 
 activate_help() {
