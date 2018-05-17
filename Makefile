@@ -5,6 +5,7 @@ rfind = $(shell find '$(1)' -path '$(2)')
 uname_s = $(shell uname -s)
 get_os = $(if $(findstring Darwin,$(call uname_s)),MAC,LINUX)
 get_ip_type = $(if $(shell echo $(1) | grep -E '^(192\.168|10\.|172\.1[6789]\.|172\.2[0-9]\.|172\.3[01]\.)'),'private','public')
+is_localhost_in_aws = $(if $(shell curl http://169.254.169.254/latest >/dev/null 2>&1)'),'aws','not_aws')
 
 ##########################################################################################
 ## Variables
@@ -45,7 +46,11 @@ ifeq ($(OS),MAC)
 	BASH_LOGIN_SOURCE = $$HOME/.bash_profile
 	INSTALL_DEPS_FILE = bin/mac_deps.sh
 else
+ifeq($(call is_localhost_in_aws),aws)
+	PLAYBOOK_TYPE = CLOUD_VM
+else
 	PLAYBOOK_TYPE = LINUX_LOCAL
+endif
 	BASH_LOGIN_SOURCE = $$HOME/.bashrc
 	INSTALL_DEPS_FILE = bin/linux_deps.sh
 endif
@@ -57,7 +62,7 @@ ifeq ($(OS),MAC)
 	BASH_LOGIN_SOURCE = $$HOME/.bashrc
 	INSTALL_DEPS_FILE = bin/mac_deps.sh
 else
-	VM_HOSTS_FILE :=
+	VM_HOSTS_FILE := ansible/cloud-vm-hosts
 	PLAYBOOK_TYPE = CLOUD_VM
 	BASH_LOGIN_SOURCE = $$HOME/.bashrc
 	INSTALL_DEPS_FILE = bin/linux_deps.sh
@@ -95,7 +100,7 @@ build : bootstrap $(TASK_FILES) $(ROLES_FILES) $(PLAYBOOK_FILE)
 ifdef SUDO_PASSWD
 	$(AT)PLAYBOOK_TYPE=$(PLAYBOOK_TYPE) GIT_USER=$(GIT_USER) GIT_EMAIL=$(GIT_EMAIL) SUDO_PASSWD=$(SUDO_PASSWD) ./bin/provision.py developer --user=$(USER) --host=$(HOST_IP) --playbook=$(PLAYBOOK_FILE) $(IGNORE_DRY_RUN)
 else
-  $(AT)PLAYBOOK_TYPE=$(PLAYBOOK_TYPE) GIT_USER=$(GIT_USER) GIT_EMAIL=$(GIT_EMAIL) ./bin/provision.py developer --user=$(USER) --host=$(HOST_IP) --playbook=$(PLAYBOOK_FILE) $(IGNORE_DRY_RUN)
+	$(AT)PLAYBOOK_TYPE=$(PLAYBOOK_TYPE) GIT_USER=$(GIT_USER) GIT_EMAIL=$(GIT_EMAIL) ./bin/provision.py developer --user=$(USER) --host=$(HOST_IP) --playbook=$(PLAYBOOK_FILE) $(IGNORE_DRY_RUN)
 endif
 
 clean :
