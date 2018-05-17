@@ -5,7 +5,7 @@ rfind = $(shell find '$(1)' -path '$(2)')
 uname_s = $(shell uname -s)
 get_os = $(if $(findstring Darwin,$(call uname_s)),MAC,LINUX)
 get_ip_type = $(if $(shell echo $(1) | grep -E '^(192\.168|10\.|172\.1[6789]\.|172\.2[0-9]\.|172\.3[01]\.)'),'private','public')
-is_localhost_in_aws = $(if $(shell curl http://169.254.169.254/latest >/dev/null 2>&1)'),'aws','not_aws')
+is_localhost_in_aws = $(if $(shell curl http://169.254.169.254/latest >/dev/null 2>&1 && echo ''),'aws','not_aws')
 
 ##########################################################################################
 ## Variables
@@ -46,7 +46,7 @@ ifeq ($(OS),MAC)
 	BASH_LOGIN_SOURCE = $$HOME/.bash_profile
 	INSTALL_DEPS_FILE = bin/mac_deps.sh
 else
-ifeq($(call is_localhost_in_aws),aws)
+ifeq ($(call is_localhost_in_aws),aws)
 	PLAYBOOK_TYPE = CLOUD_VM
 else
 	PLAYBOOK_TYPE = LINUX_LOCAL
@@ -110,6 +110,8 @@ fullclean :
 	$(AT)rm -rf .make
 
 help :
+	@echo "\nYou would be running on host $(HOST_IP) from OS $(OS) with the playbook $(PLAYBOOK_TYPE)\n"
+	@echo "Currently available targets are :\n"
 	@echo make deps # install dependencies
 	@echo make bootstrap MACHINE=VM # bootstrap the workstation on a vm or on local
 	@echo make build HOST_IP=172.20.20.10 # This is a dry run to build the workstation on a host ip or on localhost
