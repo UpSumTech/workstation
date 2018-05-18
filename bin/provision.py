@@ -185,7 +185,7 @@ def main(args=None):
         playbook_type=os.environ.get('PLAYBOOK_TYPE'),
         ansible_python_interpreter="/usr/bin/env python",
         git_user=os.environ.get('GIT_USER'),
-        git_email=os.environ.get('GIT_EMAIL')
+        git_email=os.environ.get('GIT_EMAIL'),
         user=args['--user']
         )
     if os.environ.get('SUDO_PASSWD'):
