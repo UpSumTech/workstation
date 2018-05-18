@@ -21,7 +21,7 @@
   shell: >
     . "/home/{{ user }}/.bashrc" &&
     minishift start --vm-driver virtualbox &&
-    cp "$(minishift oc-env | grep -i 'linux' | head -n 1 | cut -d '=' -f2 | sed 's#"##g' | cut -d ':' -f1)/oc" "/home/{{ user }}/bin/oc"
+    cp $(minishift oc-env | grep -i 'linux' | head -n 1 | cut -d '=' -f2 | sed 's#"##g' | cut -d ':' -f1)/oc "/home/{{ user }}/bin/oc"
   args:
     executable: /bin/bash
   when: is_minishift_installed|success
