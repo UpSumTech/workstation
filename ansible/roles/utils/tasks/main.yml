@@ -120,7 +120,7 @@
   become_user: root
 
 - name: Install concurrent multi server mysql client
-  shell: . "/home/{{ user }/.bashrc" && /bin/bash -ic "cd /home/{{ user }}/bin && curl -s -S -L -0 https://github.com/github/ccql/releases/download/v1.1.4/ccql-binary-linux-20160316084430.tar.gz | tar xz"
+  shell: . "/home/{{ user }}/.bashrc" && /bin/bash -ic "cd /home/{{ user }}/bin && curl -sSL -0 https://github.com/github/ccql/releases/download/v1.1.4/ccql-binary-linux-20160316084430.tar.gz | tar xz"
   args:
     executable: /bin/bash
 
