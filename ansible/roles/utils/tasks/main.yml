@@ -13,6 +13,7 @@
     - pgcli
     - cheat
     - docker-compose
+    - yq
   args:
     executable: /bin/bash
 
