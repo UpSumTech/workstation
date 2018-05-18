@@ -17,7 +17,7 @@ __check_kubectl() {
 
 start_ssh_agent_and_add_key() {
   eval `ssh-agent -s`
-  ssh-add -K ~/.ssh/id_rsa
+  ssh-add -K "$1"
   __ok
 }
 

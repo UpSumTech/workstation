@@ -9,6 +9,6 @@ case $- in
         ;;
       *) ;;
 esac
-[[ command -v dircolors ]] && test -r $HOME/.dircolors && eval "$(dircolors -b $HOME/.dircolors)" || eval "$(dircolors -b)"
+command -v dircolors && test -r $HOME/.dircolors && eval "$(dircolors -b $HOME/.dircolors)" || eval "$(dircolors -b)"
 [[ -f /etc/bashrc ]] && . /etc/bashrc
 [[ -f /usr/share/bash-completion/bash_completion ]] && . /usr/share/bash-completion/bash_completion || . /etc/bash_completion
