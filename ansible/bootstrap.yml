@@ -5,6 +5,20 @@
   sudo: yes
 
   tasks:
+    - apt:
+      utils:
+        - slay # cleanly kill all user processes with this utility
+
+    - name: remove-existing-user-and-group
+      shell: >
+        ps U {{ user }}; \
+        slay -clean {{ user }}; \
+        deluser {{ user }} --remove-all-files; \
+        groupdel {{ user }}
+      args:
+        executable: /bin/bash
+      ignore_errors: yes
+
     - name: Add a user group
       group: name={{ user }}
               system=yes
