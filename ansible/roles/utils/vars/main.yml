@@ -2,11 +2,14 @@
 
 apt:
   utils:
+    - slay # cleanly kills all user processes
     - sysdig # tool to inspect system calls
     - traceroute # tool to diagnose network connectivity
     - tcptrace # tool to analyze tcpdump output
     - ngrep # grep for the network layer
     - nmap # To scan networks, guess remote OS, ports etc
+    - sockstat # To get socket info
+    - procinfo # Displays information about the system by collecting info from /proc and /sys
     - iftop # Monitor network interfaces like top
     - nethogs # Find the pids that is eating all your network bandwidth
     - vnstat # Useful to stat the network interfaces
