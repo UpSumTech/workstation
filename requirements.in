@@ -1,0 +1,12 @@
+Fabric==1.12.0
+PyYAML==3.11
+colorama==0.2.5
+docopts==0.6.1
+ipython==2.2.0
+requests==2.4.1
+ansible==2.1.2.0
+paramiko==1.14.0
+credstash==1.13.2
+awscli==1.11.0
+boto==2.48.0
+boto3==1.4.0
