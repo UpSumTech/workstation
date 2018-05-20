@@ -16,7 +16,7 @@
     {% else %}
     credstash -r us-west-2 -t kms-cred-stash get -n {{ item.name }} type={{ item.context }} > "/home/{{ user }}/.ssh/github/{{ item.name }}" &&
     {% endif %}
-    chown -R "{{ user }}:{{ user }}" "/home/{{ user }}/.ssh/github/*" &&
+    chown -R "{{ user }}:{{ user }}" "/home/{{ user }}/.ssh/github" &&
     chmod 0600 "/home/{{ user }}/.ssh/github/id_rsa" &&
     chmod 0644 "/home/{{ user }}/.ssh/github/id_rsa.pub"
   with_items:
