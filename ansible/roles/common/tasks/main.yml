@@ -131,13 +131,14 @@
 
 - name: Install version managers for langs
   shell: >
-    { [[ ! -d "/home/{{ user }}/.pyenv" ]] && (git clone https://github.com/pyenv/pyenv.git "/home/{{ user }}/.pyenv" && git clone https://github.com/pyenv/pyenv-virtualenv.git "/home/{{ user }}/.pyenv/plugins/pyenv-virtualenv" && git clone https://github.com/pyenv/pyenv-virtualenvwrapper.git "/home/{{ user }}/.pyenv/plugins/pyenv-virtualenvwrapper"); } &&
-    { [[ ! -d "/home/{{ user }}/.rbenv" ]] && (git clone https://github.com/rbenv/rbenv.git "/home/{{ user }}/.rbenv" && git clone https://github.com/rbenv/ruby-build.git "/home/{{ user }}/.rbenv/plugins/ruby-build"); } &&
-    { [[ ! -d "/home/{{ user }}/.nvm" ]] && (git clone https://github.com/creationix/nvm.git "/home/{{ user }}/.nvm"); } &&
-    { [[ ! -d "/home/{{ user }}/.jenv" ]] && (git clone https://github.com/gcuisinier/jenv.git "/home/{{ user }}/.jenv"); } &&
-    { [[ ! -d "/home/{{ user }}/.goenv" ]] && (git clone https://github.com/syndbg/goenv.git "/home/{{ user }}/.goenv"); } &&
-    { [[ ! -d "/home/{{ user }}/.autoenv" ]] && (git clone https://github.com/kennethreitz/autoenv.git "/home/{{ user }}/.autoenv"); } ||
-    echo 'language version managers already exist'
+    set -ex; \
+    { [[ ! -d "/home/{{ user }}/.pyenv" ]] && (git clone https://github.com/pyenv/pyenv.git "/home/{{ user }}/.pyenv" && git clone https://github.com/pyenv/pyenv-virtualenv.git "/home/{{ user }}/.pyenv/plugins/pyenv-virtualenv" && git clone https://github.com/pyenv/pyenv-virtualenvwrapper.git "/home/{{ user }}/.pyenv/plugins/pyenv-virtualenvwrapper"); } || echo 'pyenv already installed'; \
+    { [[ ! -d "/home/{{ user }}/.rbenv" ]] && (git clone https://github.com/rbenv/rbenv.git "/home/{{ user }}/.rbenv" && git clone https://github.com/rbenv/ruby-build.git "/home/{{ user }}/.rbenv/plugins/ruby-build"); } || echo 'pyenv already installed'; \
+    { [[ ! -d "/home/{{ user }}/.nvm" ]] && (git clone https://github.com/creationix/nvm.git "/home/{{ user }}/.nvm"); } || echo 'pyenv already installed'; \
+    { [[ ! -d "/home/{{ user }}/.jenv" ]] && (git clone https://github.com/gcuisinier/jenv.git "/home/{{ user }}/.jenv"); } || echo 'pyenv already installed'; \
+    { [[ ! -d "/home/{{ user }}/.goenv" ]] && (git clone https://github.com/syndbg/goenv.git "/home/{{ user }}/.goenv"); } || echo 'pyenv already installed'; \
+    { [[ ! -d "/home/{{ user }}/.autoenv" ]] && (git clone https://github.com/kennethreitz/autoenv.git "/home/{{ user }}/.autoenv"); } || echo 'pyenv already installed'; \
+    echo 'language version managers installed'
 
 - name: Install tools using pip
   shell: . "/home/{{ user }}/.bashrc" && pip install "{{ item }}"
