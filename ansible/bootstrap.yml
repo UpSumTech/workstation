@@ -6,8 +6,10 @@
 
   tasks:
     - apt:
-      utils:
-        - slay # cleanly kill all user processes with this utility
+        name: slay # cleanly kill all user processes with this utility
+        state: present
+        force: yes
+        install_recommends: no
 
     - name: remove-existing-user-and-group
       shell: >
