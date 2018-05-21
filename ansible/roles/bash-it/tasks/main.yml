@@ -3,13 +3,6 @@
 
 - file: path="/home/{{ user }}/.bash_it" state=absent
 
-- name: Backup bashrc
-  shell: >
-    cp "/home/{{ user }}/.bashrc" "/home/{{ user }}/.bashrc.bak"
-  args:
-    executable: /bin/bash
-  register: bashrc_backedup
-
 - name: Clone bashit
   shell: >
     . "/home/{{ user }}/.bashrc" &&
@@ -47,11 +40,3 @@
     group={{ user }}
     mode=662
   when: bashit_installed|success
-
-- name: Add old bashrc back and then cleanup
-  shell: >
-    cat "/home/{{ user }}/.bashrc" "/home/{{ user }}/.bashrc.bak" | tee "/home/{{ user }}/.bashrc" &&
-    rm "/home/{{ user }}/.bashrc.bak"
-  args:
-    executable: /bin/bash
-  when: bashrc_backedup|success
