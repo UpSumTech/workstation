@@ -5,7 +5,7 @@ rfind = $(shell find '$(1)' -path '$(2)')
 uname_s = $(shell uname -s)
 get_os = $(if $(findstring Darwin,$(call uname_s)),MAC,LINUX)
 get_ip_type = $(if $(shell echo $(1) | grep -E '^(192\.168|10\.|172\.1[6789]\.|172\.2[0-9]\.|172\.3[01]\.)'),'private','public')
-is_localhost_in_aws = $(if $(shell curl http://169.254.169.254/latest >/dev/null 2>&1 && echo ''),'aws','not_aws')
+is_localhost_in_aws = $(if $(shell curl http://169.254.169.254/latest >/dev/null 2>&1 && echo 'y'),'aws','not_aws')
 
 ##########################################################################################
 ## Variables
