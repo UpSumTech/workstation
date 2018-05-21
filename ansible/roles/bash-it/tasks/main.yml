@@ -21,7 +21,7 @@
   args:
     executable: /bin/bash
   register: bashit_installed
-  when: bashit_cloned|success and bashrc_backedup|success
+  when: bashit_cloned|success
 
 - name: Add composure
   shell: >
