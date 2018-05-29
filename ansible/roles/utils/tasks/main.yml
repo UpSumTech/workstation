@@ -17,6 +17,11 @@
   args:
     executable: /bin/bash
 
+- name: Rehash pyenv for the binaries to be in PATH
+  shell: . "/home/{{ user }}/.bashrc" && pyenv rehash
+  args:
+    executable: /bin/bash
+
 - name: Add inputrc
   copy: src=inputrc
     dest="/home/{{ user }}/.inputrc"
@@ -32,6 +37,11 @@
     - thor
     - fpm
     - pleaserun
+  args:
+    executable: /bin/bash
+
+- name: Rehash rbenv for the binaries to be in PATH
+  shell: . "/home/{{ user }}/.bashrc" && rbenv rehash
   args:
     executable: /bin/bash
 

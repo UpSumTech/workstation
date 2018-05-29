@@ -157,7 +157,9 @@
     executable: /bin/bash
 
 - name: Install tools using pip
-  shell: . "/home/{{ user }}/.bashrc" && pip install "{{ item }}"
+  shell: >
+    . "/home/{{ user }}/.bashrc" && pip install "{{ item }}"; \
+    pyenv rehash
   with_items:
     - credstash
   args:
