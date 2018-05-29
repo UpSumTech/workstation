@@ -28,7 +28,7 @@ install_pyenv_virtualenv() {
 }
 
 install_autoenv() {
-  [[ -d $HOME/.autoenv ]] || git clone git://github.com/kennethreitz/autoenv.git $HOME/.autoenv
+  [[ -d $HOME/.autoenv ]] || git clone https://github.com/kennethreitz/autoenv.git $HOME/.autoenv
   cat $HOME/.bashrc | grep -i 'autoenv' || { echo '. $HOME/.autoenv/activate.sh' >> $HOME/.bashrc; }
   echo "autoenv installed"
 }
