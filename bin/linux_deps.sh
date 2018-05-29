@@ -52,7 +52,6 @@ main() {
   install_pyenv
   install_pyenv_virtualenv
   install_autoenv
-  pip install --upgrade pip
   setup_ssh_keys_and_tokens
   . $HOME/.bashrc
 }
