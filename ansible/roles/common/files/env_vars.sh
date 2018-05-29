@@ -1,5 +1,6 @@
 #! /usr/bin/env bash
 
+[[ -d "$HOME/.local/bin" ]] && export PATH="$HOME/.local/bin:$PATH"
 [[ -d "$HOME/bin" ]] && export PATH="$HOME/bin:$PATH"
 [[ -d "$HOME/tmp" ]] && export TMPDIR="$HOME/tmp"
 [[ -d "$HOME/.rbenv" ]] && export PATH="$HOME/.rbenv/bin:$PATH"
