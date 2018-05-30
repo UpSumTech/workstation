@@ -46,7 +46,7 @@ ifeq ($(OS),MAC)
 	BASH_LOGIN_SOURCE = $$HOME/.bash_profile
 	INSTALL_DEPS_FILE = bin/mac_deps.sh
 else
-ifeq ($(call is_localhost_in_aws),aws)
+ifeq ($(call is_localhost_in_aws),'aws')
 	PLAYBOOK_TYPE = CLOUD_VM
 else
 	PLAYBOOK_TYPE = LINUX_LOCAL
