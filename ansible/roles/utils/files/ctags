@@ -5,3 +5,5 @@
 --exclude=db/*
 --exclude=log/*
 --exclude=tmp/*
+--exclude=bin/*
+--exclude=dist/*
