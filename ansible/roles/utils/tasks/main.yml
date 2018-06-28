@@ -74,6 +74,7 @@
     - weather-cli
     - trash-cli
     - empty-trash-cli
+    - js-beautify
   args:
     executable: /bin/bash
 
