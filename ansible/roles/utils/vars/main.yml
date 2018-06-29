@@ -43,6 +43,7 @@ apt:
     - sgrep # Grep structured files
     - rbenv # Switch ruby versions
     - ipcalc # Util to calculate ip addresses
+    - shellcheck # Util to lint shell scripts
 
 # bash_it completions plugins and aliases
 bash_it:
