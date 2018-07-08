@@ -39,6 +39,7 @@
     - pleaserun
     - sqlint
     - mdl
+    - rubocop
   args:
     executable: /bin/bash
 
@@ -53,6 +54,16 @@
     cd "/home/{{ user }}/lib" &&
     wget http://repo1.maven.org/maven2/com/github/tomakehurst/wiremock/2.9.0/wiremock-2.9.0.jar &&
     mv wiremock-2.9.0.jar wiremock.jar
+  args:
+    executable: /bin/bash
+
+- name: Install tflint
+  shell: >
+    . "/home/{{ user }}/.bashrc" &&
+    cd "/home/{{ user }}/tmp" &&
+    wget https://github.com/wata727/tflint/releases/download/v0.7.0/tflint_linux_amd64.zip &&
+    unzip tflint_linux_amd64.zip &&
+    install tflint "/home/{{ user }}/bin"
   args:
     executable: /bin/bash
 
