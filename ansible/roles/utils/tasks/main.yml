@@ -2,7 +2,7 @@
 # These tasks set up various cli tools and utils
 
 - name: Install tools using pip
-  shell: . "/home/{{ user }}/.bashrc" && pip install "{{ item }}"
+  shell: . "/home/{{ user }}/.bashrc" && pip install --trusted-host pypi.python.org "{{ item }}"
   with_items:
     - maybe
     - percol
@@ -14,6 +14,11 @@
     - cheat
     - docker-compose
     - yq
+    - pylint
+    - pep8
+    - pycodestyle
+    - pylama
+    - pyflakes
   args:
     executable: /bin/bash
 
@@ -40,6 +45,8 @@
     - sqlint
     - mdl
     - rubocop
+    - rubocop-rails
+    - ruby-lint
   args:
     executable: /bin/bash
 
