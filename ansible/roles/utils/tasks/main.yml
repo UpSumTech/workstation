@@ -37,6 +37,8 @@
     - thor
     - fpm
     - pleaserun
+    - sqlint
+    - mdl
   args:
     executable: /bin/bash
 
@@ -77,6 +79,29 @@
     - js-beautify
     - jsonlint
     - jshint
+    - js-yaml
+  args:
+    executable: /bin/bash
+
+- name: Install tools using golang
+  shell: . "/home/{{ user }}/.bashrc" && go get -u "{{ item }}"
+  with_items:
+    - github.com/jteeuwen/go-bindata/...
+    - github.com/tylertreat/comcast
+    - github.com/derekparker/delve/cmd/dlv
+    - github.com/fatih/hclfmt
+    - github.com/mitchellh/gox
+    - mvdan.cc/interfacer
+    - github.com/jgautheron/goconst/cmd/goconst
+    - github.com/opennota/check/cmd/aligncheck
+    - github.com/opennota/check/cmd/structcheck
+    - github.com/opennota/check/cmd/varcheck
+    - github.com/mdempsky/maligned
+    - mvdan.cc/unparam
+    - github.com/stripe/safesql
+    - github.com/alexkohler/nakedret
+    - honnef.co/go/tools/cmd/unused
+    - github.com/alecthomas/gometalinter
   args:
     executable: /bin/bash
 
