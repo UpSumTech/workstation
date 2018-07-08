@@ -19,6 +19,7 @@
     - pycodestyle
     - pylama
     - pyflakes
+    - yamllint
   args:
     executable: /bin/bash
 
