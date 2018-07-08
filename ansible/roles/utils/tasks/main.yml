@@ -20,6 +20,7 @@
     - pylama
     - pyflakes
     - yamllint
+    - neovim
   args:
     executable: /bin/bash
 
