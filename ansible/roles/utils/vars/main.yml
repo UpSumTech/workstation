@@ -45,6 +45,7 @@ apt:
     - ipcalc # Util to calculate ip addresses
     - shellcheck # Util to lint shell scripts
     - devscripts # Common utils for package managers. Contains chechbashisms
+    - cppcheck # C linter
 
 # bash_it completions plugins and aliases
 bash_it:
