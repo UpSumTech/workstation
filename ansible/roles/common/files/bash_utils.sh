@@ -8,11 +8,20 @@ __ok() {
 
 __err() {
   echo "ERROR >> $1" >/dev/stderr
-  exit 1
 }
 
 __check_kubectl() {
   command -v kubectl >/dev/null 2>&1 || __err "You dont have kubectl installed"
+}
+
+__chdir_and_exec() {
+  local result
+  local fn="$1"
+  shift 1
+  pushd .
+  result=$(eval "$(declare -F "$fn")" "$@")
+  popd
+  echo "$result"
 }
 
 start_ssh_agent_and_add_key() {
@@ -21,12 +30,45 @@ start_ssh_agent_and_add_key() {
   __ok
 }
 
-install_go_deps_for_project() {
-  pushd .
+mv_2_go_project_root() {
   while [[ ! $(find . -maxdepth 1 -type d | grep '.git') =~ './.git' && ! $(basename $(cd $PWD/../.. && pwd)) =~ (github.com|golang.org|google.golang.org|gopkg.in) ]]; do
     cd ..
   done
-  go get -u $(find . -maxdepth 1 ! -path . ! -path '*/\.*' -type d | grep -v vendor | xargs -n 1 -I % echo %/...)
+}
+
+install_go_deps_for_project() {
+  pushd .
+  mv_2_go_project_root
+  if [[ ! -f "$PWD/Gopkg.toml" && ! -f "$PWD/Gopkg.lock" ]]; then
+    go get -u $(find . -maxdepth 1 ! -path . ! -path '*/\.*' -type d | grep -v vendor | xargs -n 1 -I % echo %/...)
+  else
+    dep ensure -vendor-only
+  fi
+  popd
+  __ok
+}
+
+build_static_go_bin() {
+  pushd .
+  mv_2_go_project_root
+
+  local arch="$(uname -m | tr '[:upper:]' '[:lower:]')"
+  local osname="$(uname -s | tr '[:upper:]' '[:lower:]')"
+  local archname
+
+  case "$arch" in
+    x86_64)
+      archname='amd64'
+      ;;
+    i386)
+      archname='386'
+      ;;
+    *)
+      __err "ERROR >> Arch not supported for go build process"
+      ;;
+  esac
+  echo "Building static binary for $osname/$archname"
+  CGO_ENABLED=0 gox -osarch="$osname/$archname" -rebuild -tags='netgo' -ldflags='-w -extldflags "-static"'
   popd
   __ok
 }
@@ -39,6 +81,7 @@ start_docker_machine() {
     (env | grep DOCKER | grep DOCKER_HOST | cut -d '=' -f2 | sed -e 's#tcp://##g;s#:# #g' | xargs nc -v \
       || (docker-machine stop default 2>&1 >/dev/null; eval "$(docker-machine env -u)"; docker-machine start default; eval "$(docker-machine env default)")) &
     wait
+    eval "$(docker-machine env default)"
   else
     echo "You are on linux. You dont need docker machine. Defaulting to docker native."
   fi
@@ -247,4 +290,93 @@ kube_get_master_pods() {
 kube_get_clusters() {
   __check_kubectl
   kubectl config get-clusters
+}
+
+ssh_port_forward() {
+  local local_port="$1"
+  local remote_server="$2"
+  local remote_port="$3"
+  if [[ ! -z "$JUMP_HOST" ]]; then
+    ssh -o ExitOnForwardFailure=yes -N -L $local_port:$remote_server:$remote_port $JUMP_HOST
+  else
+    ssh -o ExitOnForwardFailure=yes -N -L $local_port:$remote_server:$remote_port
+  fi
+  __ok
+}
+
+start_mysql() {
+  ps -ef | grep mysql[d] \
+    || mysql.server start
+  __ok
+}
+
+stop_mysql() {
+  ps -ef | grep mysql[d] \
+    || mysql.server stop
+  __ok
+}
+
+start_psql() {
+  [[ ! -z $PGDATA ]] || export PGDATA="$HOME/var/data/postgres"
+  local pg_log_dir="$HOME/var/log/postgres"
+  ps -ef | grep postgre[s] \
+    || pg_ctl -D "$PGDATA" -l "$pg_log_dir/server.log" start
+  __ok
+}
+
+stop_psql() {
+  local pg_log_dir="$HOME/var/log/postgres"
+  ps -ef | grep postgre[s] \
+    && pg_ctl -D "$PGDATA" -l "$pg_log_dir/server.log" stop
+  __ok
+}
+
+get_ip_info() {
+  curl http://api.db-ip.com/v2/free/$1
+  echo; nslookup $1 | grep 'name ='
+}
+
+open_fzf_finder() {
+  command -v fzf \
+    || __err "You dont have fzf installed"
+  fzf --preview-window 'down:30' --preview '[[ $(file --mime {}) =~ binary ]] &&
+    echo {} is a binary file ||
+    (highlight -O ansi -l {} ||
+    coderay {} ||
+    rougify {} ||
+    cat {}) 2> /dev/null | head -500'
+}
+
+sync_history() {
+  local current_time=$(date +%s)
+  if [[ -z $HISTLASTSYNCED \
+    || $(( $current_time - $HISTLASTSYNCED)) -gt 120 ]]; then
+    builtin history -a
+    local hist_file
+    if [[ ! -z "$TMUX" && ! -z "$PROJECT_ROOT_DIR" && $PROJECT_ROOT_DIR =~ $PWD ]]; then
+      local hist_dir="${HOME}/.bash_history.d${PWD}"
+      [[ ! -d "$hist_dir" ]] && mkdir -p "$hist_dir"
+      hist_file="${hist_dir}/${USER}_bash_history.txt"
+      if [[ ! -f "$hist_file" || ! -s "$hist_file" ]]; then
+        touch "$hist_file"
+        builtin history | awk '{$1="";print substr($0,2)}' >> "$hist_file"
+        [[ -f $HOME/.bash_history ]] && cat $HOME/.bash_history >> "$hist_file"
+        cat "$hist_file" | sort -u | sponge "$hist_file"
+      fi
+    else
+      hist_file="$HOME/.bash_history"
+    fi
+    export HISTFILE="$hist_file"
+    builtin history -c
+    builtin history -r
+    export HISTLASTSYNCED=$(date +%s)
+  fi
+  __ok
+}
+
+activate_history_sync() {
+  if [[ ! "sync_history" =~ $PROMPT_COMMAND ]]; then
+    export PROMPT_COMMAND="sync_history;$PROMPT_COMMAND"
+  fi
+  __ok
 }
