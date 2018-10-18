@@ -7,3 +7,7 @@
 --exclude=tmp/*
 --exclude=bin/*
 --exclude=dist/*
+--exclude=*.egg-info
+--exclude=build/
+--exclude=.tox/*
+--python-kinds=-i
