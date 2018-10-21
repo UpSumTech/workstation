@@ -122,6 +122,10 @@
     - github.com/alexkohler/nakedret
     - honnef.co/go/tools/cmd/unused
     - github.com/alecthomas/gometalinter
+    - github.com/nsf/gocode
+    - golang.org/x/tools/cmd/godoc
+    - github.com/sriram-srinivasan/gore
+    - mvdan.cc/sh/cmd/shfmt
   args:
     executable: /bin/bash
 

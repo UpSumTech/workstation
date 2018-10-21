@@ -1,4 +1,6 @@
+--append=yes
 --recurse=yes
+--sort=no
 --exclude=.git
 --exclude=vendor/*
 --exclude=node_modules/*
@@ -10,4 +12,14 @@
 --exclude=*.egg-info
 --exclude=build/
 --exclude=.tox/*
---python-kinds=-i
+--exclude=*.class
+--exclude=*.jar
+--exclude=*.zip
+--exclude=min
+--exclude=\*.min.\*
+--exclude=\*.map
+--exclude=\*.swp
+--exclude=\*.bak
+--exclude=tags
+--exclude=bower_components
+--exclude=*.bundle.*
