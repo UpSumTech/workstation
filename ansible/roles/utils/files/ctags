@@ -23,3 +23,5 @@
 --exclude=tags
 --exclude=bower_components
 --exclude=*.bundle.*
+
+--langmap=Lisp:+.clj
