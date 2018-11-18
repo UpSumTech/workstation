@@ -18,3 +18,5 @@ node_modules
 *.gz
 tags
 *.tfstate*
+*.pyc
+*.class
