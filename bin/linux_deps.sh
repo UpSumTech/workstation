@@ -10,6 +10,7 @@ install_libs() {
     libffi-dev \
     python-dev \
     python3-dev \
+    python \
     openssh-server
 }
 

@@ -1,9 +1,17 @@
 ---
 # This playbook bootstraps a local machine
+- name: install python2 on ubuntu 18.04 instances for the rest of the playbook to work
+  hosts: all
+  sudo: yes
+  gather_facts: false
+  tasks:
+    - name: run apt-get update and install python
+      raw: >
+        apt-get update; \
+        apt-get -y install python
 
 - hosts: all
   sudo: yes
-
   tasks:
     - apt:
         name: slay # cleanly kill all user processes with this utility

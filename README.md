@@ -81,6 +81,9 @@ This sets up a new user account called developer on a Ubuntu machine.
     make build HOST_IP=<172.20.20.10> DEBUG=on USER="<username>" GIT_USER="<git user name with no spaces>" GIT_EMAIL="<git user email>" # This just does a dry run of your build target with ansible.
     ```
 
+    If you are seeing ssh connection failure after having rebuilt a vagrant box more than once,
+    dont forget to remove the entry from ~/.ssh/known_hosts for the vagrant box
+
 ### Post setup steps if on a local Ubuntu box
 
 1.  Manual interactive steps on the GUI to setup the solarized theme
