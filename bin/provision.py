@@ -36,7 +36,7 @@ def die(msg):
     sys.exit(1)
 
 os_type_regex = re.compile('^(Darwin|Linux)$')
-def get_host_type():
+def get_local_machine_type():
     os_type = local('uname -s', capture=True)
     assert os_type_regex.match(os_type)
     if os_type == 'Darwin':
@@ -137,6 +137,11 @@ def _run_playbook(provision_type, user, host, playbook_file, extra_vars={}, dry_
     options.verbosity = True
     options.become_method = 'sudo'
 
+    local_machine_type = get_local_machine_type()
+    if isinstance(local_machine_type, MacOS):
+        options.remote_user = user
+        options.private_key_file = '~/.ssh/id_rsa'
+
     hosts = NamedTemporaryFile(delete=False)
     hosts.write("""[workstation]
     %s
@@ -191,8 +196,8 @@ def main(args=None):
     if os.environ.get('SUDO_PASSWD'):
         extra_vars["ansible_sudo_pass"] = os.environ.get('SUDO_PASSWD')
 
-    host_type = get_host_type()
-    if isinstance(host_type, MacOS):
+    local_machine_type = get_local_machine_type()
+    if isinstance(local_machine_type, MacOS):
         if not 'workstation' in os.environ.get('VIRTUAL_ENV',''):
             die("Load the virtualenv by cd ing out and back into the root of the workstation")
         if not os.environ.get('AWS_ACCESS_KEY_ID'):
@@ -201,7 +206,7 @@ def main(args=None):
             die("You need to set a aws secret access key for aws cli and credstash to use")
         extra_vars['aws_access_key_id']=os.environ.get('AWS_ACCESS_KEY_ID')
         extra_vars['aws_secret_access_key']=os.environ.get('AWS_SECRET_ACCESS_KEY')
-    elif isinstance(host_type, Linux):
+    elif isinstance(local_machine_type, Linux):
         if not 'workstation' in os.environ.get('VIRTUAL_ENV',''):
             die("Load the virtualenv by cd ing out and back into the root of the workstation")
         if not os.environ.get('AWS_ACCESS_KEY_ID'):
@@ -210,7 +215,7 @@ def main(args=None):
             die("You need to set a aws secret access key for aws cli and credstash to use")
         extra_vars['aws_access_key_id'] = os.environ.get('AWS_ACCESS_KEY_ID')
         extra_vars['aws_secret_access_key'] = os.environ.get('AWS_SECRET_ACCESS_KEY')
-    elif isinstance(host_type, Ec2Linux):
+    elif isinstance(local_machine_type, Ec2Linux):
         print('No aws cli config needed Ec2 Linux machines. The machines should be launched with the correct role.')
     else:
         die('Not ready to handle this type of OS right now')
