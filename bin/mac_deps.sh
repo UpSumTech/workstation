@@ -1,7 +1,7 @@
 #! /usr/bin/env bash
 
 install_libs() {
-  sudo brew install -y \
+  brew install \
     libtool \
     openssl \
     pyenv \
@@ -29,7 +29,7 @@ main() {
   install_pyenv_virtualenv
   install_autoenv
   pip install --upgrade pip
-  . $HOME/.bashrc
+  . $HOME/.bash_profile
 }
 
 [[ "$BASH_SOURCE" == "$0" ]] && main "$@"
