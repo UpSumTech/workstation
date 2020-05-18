@@ -88,14 +88,6 @@ deps : $(DEPS_STATEFILE)
 
 bootstrap : $(BOOTSTRAP_STATEFILE)
 
-$(BOOTSTRAP_STATEFILE) : $(DEPS_STATEFILE) $(BOOTSTRAP_FILE) $(HOSTS_FILE)
-ifdef SUDO_PASSWD
-	$(AT)ansible-playbook -i $(HOSTS_FILE) --user=$(shell whoami) --extra-vars "user=$(USER) ansible_sudo_pass=$(SUDO_PASSWD)" $(BOOTSTRAP_FILE)
-else
-	$(AT)ansible-playbook -i $(HOSTS_FILE) --extra-vars "user=$(USER)" $(BOOTSTRAP_FILE)
-endif
-	$(AT)touch $(BOOTSTRAP_STATEFILE)
-
 build : bootstrap $(TASK_FILES) $(ROLES_FILES) $(PLAYBOOK_FILE)
 ifdef SUDO_PASSWD
 	$(AT)PLAYBOOK_TYPE=$(PLAYBOOK_TYPE) GIT_USER=$(GIT_USER) GIT_EMAIL=$(GIT_EMAIL) SUDO_PASSWD=$(SUDO_PASSWD) ./bin/provision.py developer --user=$(USER) --host=$(HOST_IP) --playbook=$(PLAYBOOK_FILE) $(IGNORE_DRY_RUN)
@@ -128,3 +120,11 @@ $(DEPS_STATEFILE) : requirements.txt
 	cd $(ROOT_DIR)
 	pip install -r requirements.txt
 	touch $(DEPS_STATEFILE)
+
+$(BOOTSTRAP_STATEFILE) : $(DEPS_STATEFILE) $(BOOTSTRAP_FILE) $(HOSTS_FILE)
+ifdef SUDO_PASSWD
+	$(AT)ansible-playbook -i $(HOSTS_FILE) --user=$(shell whoami) --extra-vars "user=$(USER) ansible_sudo_pass=$(SUDO_PASSWD)" $(BOOTSTRAP_FILE)
+else
+	$(AT)ansible-playbook -i $(HOSTS_FILE) --extra-vars "user=$(USER)" $(BOOTSTRAP_FILE)
+endif
+	$(AT)touch $(BOOTSTRAP_STATEFILE)
